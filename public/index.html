@@ -1,0 +1,2841 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>One Mind — Engineering Scalable Systems</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@300;400&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0C0C0E;
+      --bg2: #111115;
+      --white: #F4F4F5;
+      --grey: #6B7280;
+      --grey-light: #9CA3AF;
+      --cobalt: #0047FF;
+      --cobalt-dim: rgba(0, 71, 255, 0.12);
+      --border: rgba(255, 255, 255, 0.07);
+      --border-strong: rgba(255, 255, 255, 0.14);
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CUSTOM CURSOR ── */
+    .cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 10px;
+      height: 10px;
+      background: var(--cobalt);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s, width 0.2s, height 0.2s, background 0.2s;
+      mix-blend-mode: screen;
+    }
+
+    .cursor-ring {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(0, 71, 255, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s ease-out, width 0.25s, height 0.25s, border-color 0.2s;
+    }
+
+    body:has(a:hover) .cursor,
+    body:has(button:hover) .cursor {
+      width: 16px;
+      height: 16px;
+    }
+
+    body:has(a:hover) .cursor-ring,
+    body:has(button:hover) .cursor-ring {
+      width: 56px;
+      height: 56px;
+      border-color: rgba(0, 71, 255, 0.8);
+    }
+
+    /* ── NOISE TEXTURE ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9997;
+      opacity: 0.4;
+    }
+
+    /* ── GRID BACKGROUND ── */
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--cobalt);
+    }
+
+    /* ── NAVIGATION ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 0 48px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.4s, border-bottom 0.4s, backdrop-filter 0.4s;
+      border-bottom: 1px solid transparent;
+    }
+
+    nav.scrolled {
+      background: rgba(12, 12, 14, 0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -0.04em;
+      color: var(--white);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-logo-img {
+      height: 44px;
+      width: auto;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--grey-light);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--cobalt);
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--white);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      background: var(--cobalt);
+      color: var(--white) !important;
+      padding: 10px 20px;
+      font-size: 12px !important;
+      font-weight: 500 !important;
+      letter-spacing: 0.08em !important;
+      text-transform: uppercase !important;
+      transition: background 0.2s, transform 0.2s !important;
+    }
+
+    .nav-cta::after {
+      display: none !important;
+    }
+
+    .nav-cta:hover {
+      background: #0038CC !important;
+      color: var(--white) !important;
+      transform: translateY(-1px);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 48px 96px;
+      overflow: hidden;
+    }
+
+    .hero-overline {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--cobalt);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .hero-overline::before {
+      content: '';
+      width: 40px;
+      height: 1px;
+      background: var(--cobalt);
+      flex-shrink: 0;
+    }
+
+    .hero-headline {
+      font-family: var(--font-display);
+      font-size: clamp(52px, 8.5vw, 128px);
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+      max-width: 1100px;
+      margin-bottom: 48px;
+    }
+
+    .hero-headline em {
+      font-style: normal;
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.3);
+    }
+
+    .hero-bottom {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+
+    .hero-desc {
+      font-size: 16px;
+      color: var(--grey-light);
+      max-width: 400px;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-primary {
+      background: var(--cobalt);
+      color: var(--white);
+      border: none;
+      padding: 14px 28px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: none;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #0038CC;
+      transform: translateY(-2px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--grey-light);
+      border: 1px solid var(--border-strong);
+      padding: 13px 28px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: none;
+      text-decoration: none;
+      display: inline-block;
+      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      border: 1px solid var(--border);
+      background: var(--border);
+    }
+
+    .metric {
+      padding: 20px 28px;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .metric-val {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .metric-val span {
+      color: var(--cobalt);
+    }
+
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--grey);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* ── SECTION LAYOUT ── */
+    section {
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 80px;
+      padding: 120px 0 80px;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-num {
+      font-family: var(--font-display);
+      font-size: clamp(80px, 10vw, 140px);
+      font-weight: 800;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.08);
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: -16px;
+      letter-spacing: -0.06em;
+    }
+
+    .section-title-block {
+      flex: 1;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--cobalt);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 4vw, 56px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 20px;
+    }
+
+    .section-subtitle {
+      font-size: 15px;
+      color: var(--grey-light);
+      max-width: 540px;
+      line-height: 1.75;
+      font-weight: 300;
+    }
+
+    /* ── MARQUEE (TRUSTED BY) ── */
+    .marquee-section {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 0;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.015);
+    }
+
+    .marquee-label-row {
+      display: flex;
+      align-items: center;
+      padding: 0 48px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .marquee-label-text {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--grey);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 14px 0;
+      flex-shrink: 0;
+      padding-right: 40px;
+      border-right: 1px solid var(--border);
+      margin-right: 40px;
+    }
+
+    .marquee-label-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .marquee-track-wrap {
+      overflow: hidden;
+    }
+
+    .marquee-track {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      width: max-content;
+      animation: marquee 40s linear infinite;
+    }
+
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes marquee {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      padding: 24px 56px;
+      border-right: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .marquee-logo {
+      height: 40px;
+      width: auto;
+      opacity: 0.35;
+      filter: grayscale(100%) contrast(120%);
+      transition: all 0.3s ease;
+    }
+
+    .marquee-item:hover .marquee-logo {
+      opacity: 0.9;
+      filter: grayscale(0%) contrast(100%);
+    }
+
+    /* ── SERVICES ── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 120px;
+    }
+
+    .service-card {
+      background: var(--bg);
+      padding: 52px 48px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 2px;
+      height: 0;
+      background: var(--cobalt);
+      transition: height 0.4s;
+    }
+
+    .service-card:hover {
+      background: var(--bg2);
+    }
+
+    .service-card:hover::before {
+      height: 100%;
+    }
+
+    .service-icon {
+      width: 44px;
+      height: 44px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .service-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .service-num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--grey);
+      letter-spacing: 0.2em;
+      margin-bottom: 16px;
+    }
+
+    .service-name {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .service-desc {
+      font-size: 14px;
+      color: var(--grey-light);
+      line-height: 1.75;
+      font-weight: 300;
+      margin-bottom: 28px;
+    }
+
+    .service-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--grey);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── PHILOSOPHY ── */
+    .philosophy-section {
+      padding-bottom: 120px;
+    }
+
+    .philosophy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .philosophy-col {
+      background: var(--bg);
+      padding: 64px 56px;
+    }
+
+    .philosophy-col:first-child {
+      background: var(--cobalt);
+    }
+
+    .philosophy-col:first-child .philo-title,
+    .philosophy-col:first-child .philo-body,
+    .philosophy-col:first-child .philo-label {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .philosophy-col:first-child .philo-label {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .philo-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--grey);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .philo-title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .philo-body {
+      font-size: 15px;
+      color: var(--grey-light);
+      line-height: 1.8;
+      font-weight: 300;
+    }
+
+    .philo-points {
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .philo-point {
+      display: flex;
+      gap: 16px;
+      font-size: 14px;
+      color: var(--grey-light);
+      font-weight: 300;
+      line-height: 1.6;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .philosophy-col:first-child .philo-point {
+      border-top-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .philo-point-num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--cobalt);
+      letter-spacing: 0.1em;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .philosophy-col:first-child .philo-point-num {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* ── PORTFOLIO ── */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 120px;
+    }
+
+    .portfolio-card {
+      background: var(--bg2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Iframe Portfolio Integration Styling */
+    .portfolio-img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--bg2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .portfolio-iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      pointer-events: none;
+      /* Allows hover effects to work */
+      z-index: 1;
+    }
+
+    .portfolio-img-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0, 71, 255, 0.06) 0%, transparent 60%);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .portfolio-img-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .portfolio-content {
+      padding: 36px 40px 40px;
+    }
+
+    .portfolio-type {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--cobalt);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .portfolio-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .portfolio-desc {
+      font-size: 14px;
+      color: var(--grey-light);
+      line-height: 1.7;
+      font-weight: 300;
+      margin-bottom: 24px;
+    }
+
+    .portfolio-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tech-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--grey-light);
+      background: var(--cobalt-dim);
+      border: 1px solid rgba(0, 71, 255, 0.2);
+      padding: 4px 10px;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── TECH STACK ── */
+    .techstack-section {
+      padding-bottom: 120px;
+    }
+
+    .techstack-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .tech-item {
+      background: var(--bg);
+      padding: 36px 24px;
+      text-align: center;
+      transition: background 0.3s;
+      position: relative;
+    }
+
+    .tech-item:hover {
+      background: var(--bg2);
+    }
+
+    .tech-item-icon {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tech-item-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .tech-item-name {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      margin-bottom: 4px;
+    }
+
+    .tech-item-cat {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--grey);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    /* ── TEAM ── */
+    .team-section {
+      padding-bottom: 120px;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .team-card {
+      background: var(--bg);
+      padding: 44px 36px;
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .team-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--cobalt);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s;
+    }
+
+    .team-card:hover {
+      background: var(--bg2);
+    }
+
+    .team-card:hover::after {
+      transform: scaleX(1);
+    }
+
+    .team-avatar {
+      width: 52px;
+      height: 52px;
+      border: 1px solid var(--border-strong);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .team-avatar svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .team-role {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .team-desc {
+      font-size: 13px;
+      color: var(--grey-light);
+      line-height: 1.7;
+      font-weight: 300;
+      margin-bottom: 24px;
+    }
+
+    .team-skills {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .team-skill {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--grey);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 0.08em;
+    }
+
+    .team-skill::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      background: var(--cobalt);
+      flex-shrink: 0;
+    }
+
+    /* ── CONTACT ── */
+    .contact-section {
+      padding-bottom: 0;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .contact-info {
+      padding: 80px 64px;
+      background: var(--bg2);
+    }
+
+    .contact-form-wrap {
+      padding: 80px 64px;
+      background: var(--bg);
+    }
+
+    .contact-big {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 72px);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 40px;
+    }
+
+    .contact-big em {
+      font-style: normal;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+    }
+
+    .contact-details {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      margin-top: 48px;
+    }
+
+    .contact-detail-item {
+      border-top: 1px solid var(--border);
+      padding-top: 28px;
+    }
+
+    .contact-detail-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--grey);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .contact-detail-val {
+      font-size: 15px;
+      color: var(--white);
+      font-weight: 400;
+      text-decoration: none;
+      transition: color 0.2s;
+      display: block;
+    }
+
+    .contact-detail-val:hover {
+      color: var(--cobalt);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--grey);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--white);
+      padding: 12px 16px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: var(--grey);
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: var(--cobalt);
+    }
+
+    .form-textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7280' stroke-width='1.5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      cursor: none;
+    }
+
+    .form-select option {
+      background: #1a1a20;
+      color: var(--white);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--cobalt);
+      color: var(--white);
+      border: none;
+      padding: 16px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: none;
+      transition: background 0.2s, transform 0.2s;
+      margin-top: 8px;
+    }
+
+    .btn-submit:hover {
+      background: #0038CC;
+      transform: translateY(-1px);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+      padding: 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 80px;
+      margin-bottom: 48px;
+    }
+
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 16px;
+    }
+
+    .footer-tagline {
+      font-size: 13px;
+      color: var(--grey);
+      line-height: 1.7;
+      font-weight: 300;
+      max-width: 260px;
+    }
+
+    .footer-col-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--grey);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--grey-light);
+      text-decoration: none;
+      font-weight: 300;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--white);
+    }
+
+    .footer-bottom {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+    }
+
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--grey);
+      letter-spacing: 0.08em;
+    }
+
+    .footer-legal {
+      display: flex;
+      gap: 32px;
+    }
+
+    .footer-legal a {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--grey);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      transition: color 0.2s;
+    }
+
+    .footer-legal a:hover {
+      color: var(--grey-light);
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 {
+      transition-delay: 0.1s;
+    }
+
+    .reveal-delay-2 {
+      transition-delay: 0.2s;
+    }
+
+    .reveal-delay-3 {
+      transition-delay: 0.3s;
+    }
+
+    .reveal-delay-4 {
+      transition-delay: 0.4s;
+    }
+
+    /* ── HERO ENTRANCE ── */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-overline {
+      animation: fadeUp 0.8s ease 0.2s both;
+    }
+
+    .hero-headline {
+      animation: fadeUp 0.9s ease 0.35s both;
+    }
+
+    .hero-bottom {
+      animation: fadeUp 0.8s ease 0.55s both;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1100px) {
+      .footer-inner {
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      nav {
+        padding: 0 24px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding: 0 24px 72px;
+      }
+
+      .hero-metrics {
+        grid-template-columns: repeat(2, 1fr);
+        width: 100%;
+      }
+
+      .metric {
+        padding: 24px 16px;
+        align-items: center;
+        text-align: center;
+      }
+
+      .section-inner {
+        padding: 0 24px;
+      }
+
+      .section-header {
+        gap: 24px;
+        padding: 80px 0 60px;
+      }
+
+      .section-num {
+        font-size: 64px;
+      }
+
+      .services-grid,
+      .portfolio-grid,
+      .philosophy-grid,
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .team-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .techstack-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      footer {
+        padding: 40px 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
+  <div class="grid-bg"></div>
+
+  <!-- ── NAVIGATION ── -->
+  <nav id="navbar">
+    <a href="#" class="nav-logo">
+      <img src="10001.png" alt="One Mind" class="nav-logo-img" />
+      One Mind
+    </a>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#work">Enterprise Work</a></li>
+      <li><a href="#client-work">Client Work</a></li>
+      <li><a href="#techstack">Tech Stack</a></li>
+      <li><a href="#team">Our Team</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#contact" class="nav-cta">Start a Project</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero" id="home">
+    <div class="hero-overline"> </div>
+    <div class="hero-overline"> </div>
+    <h1 class="hero-headline">
+      Engineering<br>
+      <em>Scalable</em><br>
+      Systems &amp;<br>
+      Digital Experiences
+    </h1>
+    <div class="hero-bottom">
+      <div>
+        <p class="hero-desc">We design and build enterprise-grade software systems that power critical operations, drive
+          revenue, and scale without compromise.</p>
+        <div class="hero-actions" style="margin-top:32px;">
+          <a href="#contact" class="btn-primary">Start a Project</a>
+          <a href="#work" class="btn-ghost">View Portfolio</a>
+        </div>
+      </div>
+
+      <div class="hero-metrics">
+        <div class="metric">
+          <div class="metric-val">12<span>+</span></div>
+          <div class="metric-label">Years Active</div>
+        </div>
+        <div class="metric">
+          <div class="metric-val">80<span>+</span></div>
+          <div class="metric-label">Projects Shipped</div>
+        </div>
+        <div class="metric">
+          <div class="metric-val">34<span></span></div>
+          <div class="metric-label">Enterprise Clients</div>
+        </div>
+        <div class="metric">
+          <div class="metric-val">99<span>%</span></div>
+          <div class="metric-label">Uptime SLA</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TRUSTED BY ── -->
+  <div class="marquee-section">
+    <div class="marquee-label-row">
+      <span class="marquee-label-text">Trusted By</span>
+      <div class="marquee-label-line"></div>
+    </div>
+    <div class="marquee-track-wrap">
+      <div class="marquee-track">
+        <div class="marquee-item"><img src="https://placehold.co/180x48/111115/6B7280?text=Commercial+Bank"
+            alt="Commercial Bank" class="marquee-logo"></div>
+        <div class="marquee-item"><img src="https://placehold.co/180x48/111115/6B7280?text=Dialog+Axiata"
+            alt="Dialog Axiata" class="marquee-logo"></div>
+        <div class="marquee-item"><img src="https://placehold.co/180x48/111115/6B7280?text=Lanka+Hospitals"
+            alt="Lanka Hospitals" class="marquee-logo"></div>
+        <div class="marquee-item"><img src="https://placehold.co/180x48/111115/6B7280?text=ICTA+Sri+Lanka"
+            alt="ICTA Sri Lanka" class="marquee-logo"></div>
+        <div class="marquee-item"><img src="https://placehold.co/180x48/111115/6B7280?text=Aitken+Spence"
+            alt="Aitken Spence Group" class="marquee-logo"></div>
+        <div class="marquee-item"><img src="https://placehold.co/180x48/111115/6B7280?text=Sampath+Bank"
+            alt="Sampath Bank" class="marquee-logo"></div>
+        <div class="marquee-item"><img src="https://placehold.co/180x48/111115/6B7280?text=Sri+Lanka+Telecom"
+            alt="Sri Lanka Telecom" class="marquee-logo"></div>
+        <div class="marquee-item"><img src="https://placehold.co/180x48/111115/6B7280?text=Hemas+Holdings"
+            alt="Hemas Holdings" class="marquee-logo"></div>
+
+        <!-- Duplicate for seamless loop -->
+        <div class="marquee-item"><img src="https://placehold.co/180x48/111115/6B7280?text=Commercial+Bank"
+            alt="Commercial Bank" class="marquee-logo"></div>
+        <div class="marquee-item"><img src="https://placehold.co/180x48/111115/6B7280?text=Dialog+Axiata"
+            alt="Dialog Axiata" class="marquee-logo"></div>
+        <div class="marquee-item"><img src="https://placehold.co/180x48/111115/6B7280?text=Lanka+Hospitals"
+            alt="Lanka Hospitals" class="marquee-logo"></div>
+        <div class="marquee-item"><img src="https://placehold.co/180x48/111115/6B7280?text=ICTA+Sri+Lanka"
+            alt="ICTA Sri Lanka" class="marquee-logo"></div>
+        <div class="marquee-item"><img src="https://placehold.co/180x48/111115/6B7280?text=Aitken+Spence"
+            alt="Aitken Spence Group" class="marquee-logo"></div>
+        <div class="marquee-item"><img src="https://placehold.co/180x48/111115/6B7280?text=Sampath+Bank"
+            alt="Sampath Bank" class="marquee-logo"></div>
+        <div class="marquee-item"><img src="https://placehold.co/180x48/111115/6B7280?text=Sri+Lanka+Telecom"
+            alt="Sri Lanka Telecom" class="marquee-logo"></div>
+        <div class="marquee-item"><img src="https://placehold.co/180x48/111115/6B7280?text=Hemas+Holdings"
+            alt="Hemas Holdings" class="marquee-logo"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SERVICES ── -->
+  <section id="services">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <div class="section-num">01</div>
+        <div class="section-title-block">
+          <div class="section-label">Core Competencies</div>
+          <h2 class="section-title">What We Build</h2>
+          <p class="section-subtitle">From greenfield architecture to legacy modernisation, we deliver engineering
+            excellence across the full product lifecycle.</p>
+        </div>
+      </div>
+      <div class="services-grid">
+        <div class="service-card reveal">
+          <div class="service-num">01 / 04</div>
+          <div class="service-icon">
+            <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="8" width="36" height="28" rx="1" stroke="#0047FF" stroke-width="1.5" />
+              <path d="M14 20l-4 4 4 4" stroke="#0047FF" stroke-width="1.5" stroke-linecap="square" />
+              <path d="M30 20l4 4-4 4" stroke="#0047FF" stroke-width="1.5" stroke-linecap="square" />
+              <path d="M24 16l-4 12" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linecap="square" />
+            </svg>
+          </div>
+          <div class="service-name">Full-Stack Web Development</div>
+          <p class="service-desc">We architect and deliver robust, high-throughput web applications built for enterprise
+            scale. From API design to frontend delivery, our engineering teams own the complete stack with a relentless
+            focus on performance and maintainability.</p>
+          <div class="service-tags">
+            <span class="tag">React / Next.js</span>
+            <span class="tag">Spring Boot</span>
+            <span class="tag">Node.js</span>
+            <span class="tag">PostgreSQL</span>
+          </div>
+        </div>
+        <div class="service-card reveal reveal-delay-1">
+          <div class="service-num">02 / 04</div>
+          <div class="service-icon">
+            <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="6" width="14" height="14" stroke="#0047FF" stroke-width="1.5" />
+              <rect x="24" y="6" width="14" height="14" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+              <rect x="6" y="24" width="14" height="14" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+              <rect x="24" y="24" width="14" height="14" stroke="#0047FF" stroke-width="1.5" />
+            </svg>
+          </div>
+          <div class="service-name">System-Level Programming</div>
+          <p class="service-desc">Deep infrastructure engineering for performance-critical environments. We develop
+            custom system components, real-time processing engines, and middleware integrations that underpin
+            mission-critical operations in financial and telecommunications sectors.</p>
+          <div class="service-tags">
+            <span class="tag">C / C++</span>
+            <span class="tag">Rust</span>
+            <span class="tag">Kernel Integration</span>
+            <span class="tag">POSIX</span>
+          </div>
+        </div>
+        <div class="service-card reveal reveal-delay-2">
+          <div class="service-num">03 / 04</div>
+          <div class="service-icon">
+            <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="13" y="4" width="18" height="32" rx="2" stroke="#0047FF" stroke-width="1.5" />
+              <circle cx="22" cy="32" r="2" stroke="#0047FF" stroke-width="1.5" />
+              <line x1="17" y1="10" x2="27" y2="10" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+            </svg>
+          </div>
+          <div class="service-name">Mobile Applications</div>
+          <p class="service-desc">Native and cross-platform mobile solutions engineered for demanding enterprise use
+            cases. From customer-facing retail applications to field operations tools, we deliver responsive,
+            offline-capable products with polished interfaces.</p>
+          <div class="service-tags">
+            <span class="tag">React Native</span>
+            <span class="tag">Flutter</span>
+            <span class="tag">iOS / Android</span>
+            <span class="tag">Offline Sync</span>
+          </div>
+        </div>
+        <div class="service-card reveal reveal-delay-3">
+          <div class="service-num">04 / 04</div>
+          <div class="service-icon">
+            <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="22" cy="22" r="10" stroke="#0047FF" stroke-width="1.5" />
+              <circle cx="22" cy="22" r="3" fill="#0047FF" />
+              <line x1="22" y1="4" x2="22" y2="12" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+              <line x1="22" y1="32" x2="22" y2="40" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+              <line x1="4" y1="22" x2="12" y2="22" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+              <line x1="32" y1="22" x2="40" y2="22" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+            </svg>
+          </div>
+          <div class="service-name">AI/ML Integration &amp; Data Analytics</div>
+          <p class="service-desc">We embed intelligence into existing systems and build purpose-built analytics
+            platforms. From predictive risk models for banking to demand forecasting for retail, our data engineering
+            practice translates raw information into operational advantage.</p>
+          <div class="service-tags">
+            <span class="tag">Python / PyTorch</span>
+            <span class="tag">LLM Integration</span>
+            <span class="tag">Apache Spark</span>
+            <span class="tag">BI Dashboards</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PHILOSOPHY ── -->
+  <section id="philosophy">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <div class="section-num">02</div>
+        <div class="section-title-block">
+          <div class="section-label">Our Methodology</div>
+          <h2 class="section-title">The One Mind Approach</h2>
+          <p class="section-subtitle">We operate as a single, unified intelligence across disciplines. No silos. No
+            handoffs. Just end-to-end ownership.</p>
+        </div>
+      </div>
+      <div class="philosophy-section">
+        <div class="philosophy-grid">
+          <div class="philosophy-col reveal">
+            <div class="philo-label">Principle 01</div>
+            <h3 class="philo-title">Integrated Collaboration Across Every Layer</h3>
+            <p class="philo-body">The name One Mind is not a brand exercise. It is a commitment to cross-functional
+              alignment that eliminates the gaps that kill most enterprise projects. Our architects, engineers, and
+              product strategists work from a shared mental model from day one.</p>
+            <div class="philo-points">
+              <div class="philo-point">
+                <span class="philo-point-num">01</span>
+                <span>Joint discovery sessions ensure technical constraints inform business requirements before a single
+                  line of code is written.</span>
+              </div>
+              <div class="philo-point">
+                <span class="philo-point-num">02</span>
+                <span>Dedicated senior architects remain embedded throughout delivery, not just in the scoping
+                  phase.</span>
+              </div>
+              <div class="philo-point">
+                <span class="philo-point-num">03</span>
+                <span>Client stakeholders receive fortnightly architecture reviews with full system transparency.</span>
+              </div>
+            </div>
+          </div>
+          <div class="philosophy-col reveal reveal-delay-2">
+            <div class="philo-label">Principle 02</div>
+            <h3 class="philo-title">Rigorous Engineering Standards &amp; Lifecycle Ownership</h3>
+            <p class="philo-body">We hold ourselves to standards that reflect the operational risk profiles of our
+              clients. A failure in a payment gateway or a hospital information system is not a bug report. It is a
+              business event. Our engineering culture is built around that reality.</p>
+            <div class="philo-points">
+              <div class="philo-point">
+                <span class="philo-point-num">01</span>
+                <span>Every system is delivered with automated test coverage exceeding 85%, full CI/CD pipelines, and
+                  documented runbooks.</span>
+              </div>
+              <div class="philo-point">
+                <span class="philo-point-num">02</span>
+                <span>Structured post-deployment support contracts with defined SLA tiers for mission-critical
+                  environments.</span>
+              </div>
+              <div class="philo-point">
+                <span class="philo-point-num">03</span>
+                <span>Regular architecture reviews at 6, 12, and 24 months to align systems with evolving organisational
+                  needs.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PORTFOLIO: ENTERPRISE WORK ── -->
+  <section id="work">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <div class="section-num">03</div>
+        <div class="section-title-block">
+          <div class="section-label">Selected Case Studies</div>
+          <h2 class="section-title">Enterprise Work</h2>
+          <p class="section-subtitle">A cross-section of engagements where technical complexity met organisational
+            urgency.</p>
+        </div>
+      </div>
+
+      <div class="portfolio-grid">
+        <!-- Project 1: Core Banking -->
+        <div class="portfolio-card reveal">
+          <div class="portfolio-img" id="img-bank">
+            <div class="portfolio-img-grid"></div>
+            <div class="portfolio-img-overlay"></div>
+          </div>
+          <div class="portfolio-content">
+            <div class="portfolio-type">Financial Services</div>
+            <h3 class="portfolio-title">Core Banking Analytics Platform</h3>
+            <p class="portfolio-desc">Designed and built a real-time risk analytics and reporting platform for a Tier-1
+              commercial bank in Sri Lanka. The system processes over 2.4 million transactions daily, providing
+              treasury, credit risk, and compliance teams with live operational intelligence across 180 branches.</p>
+            <div class="portfolio-tech">
+              <span class="tech-tag">React</span>
+              <span class="tech-tag">Spring Boot</span>
+              <span class="tech-tag">Apache Kafka</span>
+              <span class="tech-tag">PostgreSQL</span>
+              <span class="tech-tag">Docker</span>
+              <span class="tech-tag">AWS</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 2: Network Management -->
+        <div class="portfolio-card reveal reveal-delay-2">
+          <div class="portfolio-img" id="img-noc">
+            <div class="portfolio-img-grid"></div>
+            <div class="portfolio-img-overlay"></div>
+          </div>
+          <div class="portfolio-content">
+            <div class="portfolio-type">Telecommunications</div>
+            <h3 class="portfolio-title">Field Operations &amp; Network Management Suite</h3>
+            <p class="portfolio-desc">Delivered a cross-platform mobile and web suite enabling 2,200 field engineers to
+              manage network infrastructure, log fault resolutions, and escalate incidents in real time. Integrated with
+              legacy OSS/BSS systems via a purpose-built middleware layer with offline synchronisation capability.</p>
+            <div class="portfolio-tech">
+              <span class="tech-tag">React Native</span>
+              <span class="tech-tag">Node.js</span>
+              <span class="tech-tag">GraphQL</span>
+              <span class="tech-tag">Redis</span>
+              <span class="tech-tag">Terraform</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 3: AI Call Agent -->
+        <div class="portfolio-card reveal reveal-delay-1">
+          <div class="portfolio-img" id="img-voice">
+            <div class="portfolio-img-grid"></div>
+            <div class="portfolio-img-overlay"></div>
+          </div>
+          <div class="portfolio-content">
+            <div class="portfolio-type">Customer Experience &amp; AI</div>
+            <h3 class="portfolio-title">Sinhala Conversational AI Agent</h3>
+            <p class="portfolio-desc">Developed an advanced, low-latency voice AI agent capable of fluent Sinhala and
+              English conversations. Integrated with enterprise telecom infrastructure, the agent handles over 10,000
+              daily customer support calls, performing real-time intent recognition and dynamic resolution without human
+              intervention.</p>
+            <div class="portfolio-tech">
+              <span class="tech-tag">LLM / GenAI</span>
+              <span class="tech-tag">Speech-to-Text</span>
+              <span class="tech-tag">Python</span>
+              <span class="tech-tag">Twilio</span>
+              <span class="tech-tag">FastAPI</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 4: Retail Platform -->
+        <div class="portfolio-card reveal reveal-delay-3">
+          <div class="portfolio-img" id="img-retail">
+            <div class="portfolio-img-grid"></div>
+            <div class="portfolio-img-overlay"></div>
+          </div>
+          <div class="portfolio-content">
+            <div class="portfolio-type">Retail &amp; E-Commerce</div>
+            <h3 class="portfolio-title">Omnichannel Retail Intelligence Platform</h3>
+            <p class="portfolio-desc">Built a unified commerce and demand intelligence system for one of Sri Lanka's
+              largest retail conglomerates, consolidating inventory, POS, and customer data across 60 physical locations
+              and a high-traffic e-commerce channel. Reduced stockout incidents by 41% in year one.</p>
+            <div class="portfolio-tech">
+              <span class="tech-tag">Next.js</span>
+              <span class="tech-tag">Python / ML</span>
+              <span class="tech-tag">Apache Spark</span>
+              <span class="tech-tag">MongoDB</span>
+              <span class="tech-tag">GCP</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PORTFOLIO: CLIENT WORK ── -->
+  <section id="client-work">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <div class="section-num">04</div>
+        <div class="section-title-block">
+          <div class="section-label">Creative &amp; Commercial</div>
+          <h2 class="section-title">Client Work</h2>
+          <p class="section-subtitle">Award-winning digital experiences, beautiful interfaces, and engaging consumer
+            products built for ambitious brands.</p>
+        </div>
+      </div>
+
+      <div class="portfolio-grid">
+        <!-- Client Project 1: Luxury Website -->
+        <div class="portfolio-card reveal">
+          <div class="portfolio-img" id="img-aura">
+            <div class="portfolio-img-grid"></div>
+            <div class="portfolio-img-overlay"></div>
+          </div>
+          <div class="portfolio-content">
+            <div class="portfolio-type">E-Commerce Website</div>
+            <h3 class="portfolio-title">Aura Luxury Lifestyle</h3>
+            <p class="portfolio-desc">A highly visual, immersive e-commerce experience built for a premium lifestyle
+              brand. We focused on fluid WebGL transitions, sophisticated typography, and a lightning-fast headless
+              backend to drive higher conversion rates.</p>
+            <div class="portfolio-tech">
+              <span class="tech-tag">Next.js</span>
+              <span class="tech-tag">Shopify Headless</span>
+              <span class="tech-tag">WebGL</span>
+              <span class="tech-tag">Framer Motion</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Client Project 2: Mobile App -->
+        <div class="portfolio-card reveal reveal-delay-2">
+          <div class="portfolio-img" id="img-lumina">
+            <div class="portfolio-img-grid"></div>
+            <div class="portfolio-img-overlay"></div>
+          </div>
+          <div class="portfolio-content">
+            <div class="portfolio-type">Mobile Application</div>
+            <h3 class="portfolio-title">Lumina Wellness &amp; Meditation</h3>
+            <p class="portfolio-desc">Designed from the ground up to provide a calming, intuitive mobile experience. The
+              app features real-time audio streaming, personalised meditation tracks using AI, and beautifully fluid UI
+              animations.</p>
+            <div class="portfolio-tech">
+              <span class="tech-tag">Flutter</span>
+              <span class="tech-tag">Firebase</span>
+              <span class="tech-tag">Audio Streaming</span>
+              <span class="tech-tag">Node.js</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Client Project 3: Creative 1 -->
+        <div class="portfolio-card reveal reveal-delay-1">
+          <div class="portfolio-img" id="img-nova">
+            <div class="portfolio-img-grid"></div>
+            <div class="portfolio-img-overlay"></div>
+          </div>
+          <div class="portfolio-content">
+            <div class="portfolio-type">Web Application</div>
+            <h3 class="portfolio-title">Nova Real Estate Platform</h3>
+            <p class="portfolio-desc">A modern property tech platform featuring an interactive map, 3D virtual tours,
+              and a sleek dark-mode interface. The platform simplifies the buying process by integrating smart filtering
+              and instant agent booking.</p>
+            <div class="portfolio-tech">
+              <span class="tech-tag">Vue.js</span>
+              <span class="tech-tag">Three.js</span>
+              <span class="tech-tag">Mapbox GL</span>
+              <span class="tech-tag">Tailwind</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Client Project 4: Creative 2 -->
+        <div class="portfolio-card reveal reveal-delay-3">
+          <div class="portfolio-img" id="img-sync">
+            <div class="portfolio-img-grid"></div>
+            <div class="portfolio-img-overlay"></div>
+          </div>
+          <div class="portfolio-content">
+            <div class="portfolio-type">Digital Platform</div>
+            <h3 class="portfolio-title">Sync Social Music</h3>
+            <p class="portfolio-desc">A vibrant, neon-accented social music platform allowing users to collaborate on
+              playlists in real-time. Built with a high-performance websocket architecture to ensure seamless track
+              syncing across devices.</p>
+            <div class="portfolio-tech">
+              <span class="tech-tag">React</span>
+              <span class="tech-tag">WebSockets</span>
+              <span class="tech-tag">Spotify API</span>
+              <span class="tech-tag">Express.js</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TECH STACK ── -->
+  <section id="techstack">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <div class="section-num">05</div>
+        <div class="section-title-block">
+          <div class="section-label">Technology</div>
+          <h2 class="section-title">Our Tech Stack</h2>
+          <p class="section-subtitle">We are technology-pragmatic. Our stack is chosen for longevity, community support,
+            and suitability to the problem, not for novelty.</p>
+        </div>
+      </div>
+      <div class="techstack-section">
+        <div class="techstack-grid">
+          <div class="tech-item reveal">
+            <div class="tech-item-icon">
+              <svg viewBox="0 0 40 40" fill="none">
+                <circle cx="20" cy="20" r="12" stroke="#0047FF" stroke-width="1.5" />
+                <path d="M14 20c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6" stroke="rgba(255,255,255,0.3)"
+                  stroke-width="1.5" />
+              </svg>
+            </div>
+            <div class="tech-item-name">React</div>
+            <div class="tech-item-cat">Frontend</div>
+          </div>
+          <div class="tech-item reveal reveal-delay-1">
+            <div class="tech-item-icon">
+              <svg viewBox="0 0 40 40" fill="none">
+                <rect x="8" y="8" width="24" height="24" stroke="#0047FF" stroke-width="1.5" />
+                <path d="M14 26l6-12 6 12" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="square" />
+                <path d="M16 22h8" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+              </svg>
+            </div>
+            <div class="tech-item-name">Python</div>
+            <div class="tech-item-cat">AI / Data</div>
+          </div>
+          <div class="tech-item reveal reveal-delay-2">
+            <div class="tech-item-icon">
+              <svg viewBox="0 0 40 40" fill="none">
+                <rect x="10" y="10" width="20" height="20" rx="0" stroke="#0047FF" stroke-width="1.5" />
+                <circle cx="20" cy="20" r="4" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+              </svg>
+            </div>
+            <div class="tech-item-name">Java</div>
+            <div class="tech-item-cat">Backend</div>
+          </div>
+          <div class="tech-item reveal reveal-delay-3">
+            <div class="tech-item-icon">
+              <svg viewBox="0 0 40 40" fill="none">
+                <path d="M20 8l12 6v12l-12 6-12-6V14z" stroke="#0047FF" stroke-width="1.5" />
+                <path d="M20 8v24M8 14l12 6 12-6" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+              </svg>
+            </div>
+            <div class="tech-item-name">Docker</div>
+            <div class="tech-item-cat">Infrastructure</div>
+          </div>
+          <div class="tech-item reveal reveal-delay-4">
+            <div class="tech-item-icon">
+              <svg viewBox="0 0 40 40" fill="none">
+                <rect x="8" y="16" width="10" height="8" stroke="#0047FF" stroke-width="1.5" />
+                <rect x="22" y="12" width="10" height="16" stroke="#0047FF" stroke-width="1.5" />
+                <rect x="8" y="8" width="10" height="5" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+              </svg>
+            </div>
+            <div class="tech-item-name">AWS</div>
+            <div class="tech-item-cat">Cloud</div>
+          </div>
+          <div class="tech-item reveal">
+            <div class="tech-item-icon">
+              <svg viewBox="0 0 40 40" fill="none">
+                <circle cx="20" cy="14" r="5" stroke="#0047FF" stroke-width="1.5" />
+                <circle cx="12" cy="28" r="5" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+                <circle cx="28" cy="28" r="5" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+                <line x1="15" y1="18" x2="13.5" y2="23" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+                <line x1="25" y1="18" x2="26.5" y2="23" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+              </svg>
+            </div>
+            <div class="tech-item-name">Kubernetes</div>
+            <div class="tech-item-cat">Orchestration</div>
+          </div>
+          <div class="tech-item reveal reveal-delay-1">
+            <div class="tech-item-icon">
+              <svg viewBox="0 0 40 40" fill="none">
+                <path d="M10 30L20 10l10 20H10z" stroke="#0047FF" stroke-width="1.5" />
+              </svg>
+            </div>
+            <div class="tech-item-name">Terraform</div>
+            <div class="tech-item-cat">IaC</div>
+          </div>
+          <div class="tech-item reveal reveal-delay-2">
+            <div class="tech-item-icon">
+              <svg viewBox="0 0 40 40" fill="none">
+                <ellipse cx="20" cy="20" rx="14" ry="6" stroke="#0047FF" stroke-width="1.5" />
+                <path d="M6 20v8c0 3.3 6.3 6 14 6s14-2.7 14-6v-8" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+              </svg>
+            </div>
+            <div class="tech-item-name">PostgreSQL</div>
+            <div class="tech-item-cat">Database</div>
+          </div>
+          <div class="tech-item reveal reveal-delay-3">
+            <div class="tech-item-icon">
+              <svg viewBox="0 0 40 40" fill="none">
+                <path d="M20 8L30 14V26L20 32L10 26V14L20 8Z" stroke="#0047FF" stroke-width="1.5" />
+                <circle cx="20" cy="8" r="3" fill="#111115" stroke="#0047FF" stroke-width="1.5" />
+                <circle cx="30" cy="14" r="3" fill="#111115" stroke="#0047FF" stroke-width="1.5" />
+                <circle cx="30" cy="26" r="3" fill="#111115" stroke="#0047FF" stroke-width="1.5" />
+                <circle cx="20" cy="32" r="3" fill="#111115" stroke="#0047FF" stroke-width="1.5" />
+                <circle cx="10" cy="26" r="3" fill="#111115" stroke="#0047FF" stroke-width="1.5" />
+                <circle cx="10" cy="14" r="3" fill="#111115" stroke="#0047FF" stroke-width="1.5" />
+              </svg>
+            </div>
+            <div class="tech-item-name">GraphQL</div>
+            <div class="tech-item-cat">API</div>
+          </div>
+          <div class="tech-item reveal reveal-delay-4">
+            <div class="tech-item-icon">
+              <svg viewBox="0 0 40 40" fill="none">
+                <rect x="8" y="8" width="10" height="10" stroke="#0047FF" stroke-width="1.5" />
+                <rect x="22" y="8" width="10" height="10" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+                <rect x="8" y="22" width="10" height="10" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+                <rect x="22" y="22" width="10" height="10" stroke="#0047FF" stroke-width="1.5" />
+              </svg>
+            </div>
+            <div class="tech-item-name">Next.js</div>
+            <div class="tech-item-cat">Full-Stack</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TEAM ── -->
+  <section id="team">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <div class="section-num">06</div>
+        <div class="section-title-block">
+          <div class="section-label">Leadership &amp; Expertise</div>
+          <h2 class="section-title">Our Team</h2>
+          <p class="section-subtitle">Senior practitioners with deep domain knowledge in the industries we serve. Every
+            engagement is led, not delegated.</p>
+        </div>
+      </div>
+      <div class="team-section">
+        <div class="team-grid">
+          <div class="team-card reveal">
+            <div class="team-avatar">
+              <svg viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="3" width="8" height="8" stroke="#0047FF" stroke-width="1.2" />
+                <rect x="13" y="3" width="8" height="8" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" />
+                <rect x="3" y="13" width="8" height="8" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" />
+                <rect x="13" y="13" width="8" height="8" stroke="#0047FF" stroke-width="1.2" />
+              </svg>
+            </div>
+            <div class="team-role">Chief Systems Architect</div>
+            <p class="team-desc">Leads solution architecture for complex, multi-system enterprise engagements.
+              Specialises in distributed systems, high-availability design, and long-term technical strategy.</p>
+            <div class="team-skills">
+              <span class="team-skill">Distributed Systems Design</span>
+              <span class="team-skill">Enterprise Architecture</span>
+              <span class="team-skill">Technical Due Diligence</span>
+            </div>
+          </div>
+          <div class="team-card reveal reveal-delay-1">
+            <div class="team-avatar">
+              <svg viewBox="0 0 24 24" fill="none">
+                <polyline points="4,17 9,12 13,16 20,7" stroke="#0047FF" stroke-width="1.2" fill="none" />
+                <line x1="4" y1="20" x2="20" y2="20" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" />
+              </svg>
+            </div>
+            <div class="team-role">Lead Frontend Engineer</div>
+            <p class="team-desc">Drives interface architecture and design systems for enterprise web products. Owns
+              frontend performance, accessibility, and the visual quality bar across all client deliverables.</p>
+            <div class="team-skills">
+              <span class="team-skill">React / Next.js Architecture</span>
+              <span class="team-skill">Design Systems</span>
+              <span class="team-skill">Web Performance</span>
+            </div>
+          </div>
+          <div class="team-card reveal reveal-delay-2">
+            <div class="team-avatar">
+              <svg viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="5" stroke="#0047FF" stroke-width="1.2" />
+                <circle cx="12" cy="12" r="1.5" fill="#0047FF" />
+                <line x1="12" y1="3" x2="12" y2="7" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" />
+                <line x1="12" y1="17" x2="12" y2="21" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" />
+                <line x1="3" y1="12" x2="7" y2="12" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" />
+                <line x1="17" y1="12" x2="21" y2="12" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" />
+              </svg>
+            </div>
+            <div class="team-role">AI Research Lead</div>
+            <p class="team-desc">Oversees applied machine learning research and productionisation of AI features.
+              Bridges the gap between data science research and engineering-grade deployment in regulated industries.
+            </p>
+            <div class="team-skills">
+              <span class="team-skill">Machine Learning Ops</span>
+              <span class="team-skill">LLM Integration</span>
+              <span class="team-skill">Predictive Analytics</span>
+            </div>
+          </div>
+          <div class="team-card reveal reveal-delay-3">
+            <div class="team-avatar">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 4l8 4v8l-8 4-8-4V8z" stroke="#0047FF" stroke-width="1.2" />
+                <path d="M12 4v16M4 8l8 4 8-4" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" />
+              </svg>
+            </div>
+            <div class="team-role">DevOps Manager</div>
+            <p class="team-desc">Manages the full infrastructure and delivery pipeline discipline. Responsible for cloud
+              architecture, CI/CD standards, disaster recovery planning, and the 99.9% uptime commitment across client
+              environments.</p>
+            <div class="team-skills">
+              <span class="team-skill">Kubernetes / Terraform</span>
+              <span class="team-skill">CI/CD Engineering</span>
+              <span class="team-skill">Cloud Cost Optimisation</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTACT ── -->
+  <section id="contact" class="contact-section">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <div class="section-num">07</div>
+        <div class="section-title-block">
+          <div class="section-label">New Engagements</div>
+          <h2 class="section-title">Start a Conversation</h2>
+          <p class="section-subtitle">We take a limited number of new projects each quarter. If you are building
+            something that requires serious engineering, let's talk.</p>
+        </div>
+      </div>
+      <div class="contact-grid reveal">
+        <div class="contact-info">
+          <div class="contact-big">Let's<br>Build<br><em>Together.</em></div>
+          <div class="contact-details">
+            <div class="contact-detail-item">
+              <div class="contact-detail-label">Direct Email</div>
+              <a href="mailto:hello@onemind.lk" class="contact-detail-val">hello@onemind.lk</a>
+            </div>
+            <div class="contact-detail-item">
+              <div class="contact-detail-label">Phone</div>
+              <a href="tel:+94112000000" class="contact-detail-val">+94 11 200 0000</a>
+            </div>
+            <div class="contact-detail-item">
+              <div class="contact-detail-label">Response Time</div>
+              <span class="contact-detail-val">Within 24 business hours</span>
+            </div>
+          </div>
+        </div>
+        <div class="contact-form-wrap">
+          <form id="contact-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input id="cf-name" class="form-input" type="text" placeholder="Your name" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Company</label>
+                <input id="cf-company" class="form-input" type="text" placeholder="Organisation name" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Work Email</label>
+              <input id="cf-email" class="form-input" type="email" placeholder="you@company.com" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Project Brief</label>
+              <textarea id="cf-brief" class="form-textarea"
+                placeholder="Describe the system or product you want to build. What problem are you solving, and what scale do you expect?"
+                required></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Budget Range</label>
+              <select id="cf-budget" class="form-select" required>
+                <option value="" disabled selected>Select a budget range</option>
+                <option>Under $25,000</option>
+                <option>$25,000 – $75,000</option>
+                <option>$75,000 – $200,000</option>
+                <option>$200,000 – $500,000</option>
+                <option>$500,000+</option>
+                <option>To be discussed</option>
+              </select>
+            </div>
+            <button type="submit" id="cf-submit" class="btn-submit">Submit Project Enquiry</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">One Mind</div>
+        <p class="footer-tagline">A full-stack software and systems engineering agency based in Colombo, Sri Lanka,
+          delivering enterprise-grade digital infrastructure since 2018.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Services</div>
+        <ul class="footer-links">
+          <li><a href="#services">Web Development</a></li>
+          <li><a href="#services">System Engineering</a></li>
+          <li><a href="#services">Mobile Applications</a></li>
+          <li><a href="#services">AI &amp; Data Analytics</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="#philosophy">Our Approach</a></li>
+          <li><a href="#work">Case Studies</a></li>
+          <li><a href="#team">Our Team</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Location</div>
+        <ul class="footer-links">
+          <li><a href="mailto:hello@onemind.lk">hello@onemind.lk</a></li>
+          <li><a href="tel:+94112000000">+94 11 200 0000</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; <span id="year"></span> One Mind. All rights reserved.</span>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Engagement</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── RAW HTML DATA FOR EMBEDDED PROJECT APPS ── -->
+
+  <!-- Bank App Data (Enterprise 1) -->
+  <textarea id="app-bank" style="display:none;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #1a1a1a; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+  :root { --bg: #0C0C0E; --surface: #111115; --border: rgba(255,255,255,0.07); --cobalt: #0047FF; --cobalt-glow: rgba(0,71,255,0.18); --cobalt-dim: rgba(0,71,255,0.08); --text: #F0F0F6; --muted: #6B6B80; --green: #00E87A; }
+  .mockup { width: 800px; height: 450px; overflow: hidden; background: var(--bg); font-family: 'Syne', sans-serif; display: flex; flex-direction: column; border-radius: 10px; box-shadow: 0 0 80px rgba(0,0,0,0.8); }
+  .nav { height: 48px; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid var(--border); gap: 12px; flex-shrink: 0; }
+  .logo { display: flex; align-items: center; gap: 8px; }
+  .logo-mark { width: 26px; height: 26px; position: relative; }
+  .logo-mark::before { content: ''; position: absolute; inset: 0; background: var(--cobalt); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+  .logo-mark::after { content: ''; position: absolute; top: 6px; left: 6px; width: 14px; height: 14px; background: var(--bg); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+  .logo-text { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; color: var(--text); }
+  .logo-sub { font-size: 9px; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; }
+  .nav-spacer { flex: 1; }
+  .nav-links { display: flex; gap: 24px; list-style: none; margin-left: 24px; }
+  .nav-links li { font-size: 11px; letter-spacing: 0.06em; color: var(--muted); cursor: pointer; transition: color 0.2s; }
+  .nav-links li.active { color: var(--text); }
+  .status-pill { display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(0,232,122,0.07); border: 1px solid rgba(0,232,122,0.18); border-radius: 20px; font-family: 'DM Mono', monospace; font-size: 9.5px; color: var(--green); letter-spacing: 0.04em; }
+  .pulse-dot { width: 6px; height: 6px; flex-shrink: 0; }
+  @keyframes pulse { 0%,100% { opacity: 1; r: 3; } 50% { opacity: 0.4; r: 2; } }
+  .pulse-dot circle { animation: pulse 1.8s ease-in-out infinite; }
+  .avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, #1a1a2e, #16213e); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: 0.05em; flex-shrink: 0; }
+  .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 12px 20px; flex-shrink: 0; }
+  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; transition: transform 0.2s, border-color 0.2s; position: relative; overflow: hidden; }
+  .kpi-card:hover { transform: translateY(-2px); border-color: var(--cobalt); }
+  .kpi-label { font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .kpi-val { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500; color: var(--text); line-height: 1; }
+  .kpi-val span.unit { font-size: 12px; color: var(--muted); margin-left: 2px; }
+  .kpi-meta { margin-top: 6px; font-family: 'DM Mono', monospace; font-size: 9px; display: flex; align-items: center; gap: 4px; }
+  .kpi-up { color: var(--green); } .kpi-warn { color: #F5A623; } .kpi-danger { color: #FF4040; }
+  .kpi-bar { margin-top: 8px; height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .kpi-bar-fill { height: 100%; border-radius: 2px; background: var(--cobalt); }
+  .viz-container { flex: 1; margin: 0 20px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; position: relative; overflow: hidden; }
+  .viz-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px 8px; border-bottom: 1px solid var(--border); }
+  .viz-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); }
+  .viz-meta { display: flex; gap: 12px; align-items: center; }
+  .viz-badge { font-family: 'DM Mono', monospace; font-size: 9px; padding: 2px 7px; background: var(--cobalt-dim); border: 1px solid rgba(0,71,255,0.25); border-radius: 3px; color: #7BA7FF; }
+  .viz-time { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); }
+  .viz-body { position: absolute; top: 37px; left: 0; right: 0; bottom: 0; padding: 10px 14px 8px; }
+  .y-labels { position: absolute; top: 10px; bottom: 18px; left: 14px; width: 34px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; }
+  .y-label { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--muted); }
+  .chart-area { position: absolute; top: 10px; bottom: 18px; left: 52px; right: 14px; }
+  .x-labels { position: absolute; bottom: 4px; left: 52px; right: 14px; display: flex; justify-content: space-between; }
+  .x-label { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="mockup">
+  <nav class="nav">
+    <div class="logo"><div class="logo-mark"></div><div><div class="logo-text">VANTEX</div><div class="logo-sub">Core Banking</div></div></div>
+    <ul class="nav-links"><li class="active">Overview</li><li>Transactions</li><li>Risk</li><li>Compliance</li></ul>
+    <div class="nav-spacer"></div>
+    <div class="status-pill"><svg class="pulse-dot" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3" fill="#00E87A"/></svg>SYSTEM SECURE</div>
+    <div class="avatar">JR</div>
+  </nav>
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-label">Daily Transactions (Volume)</div><div class="kpi-val">2.847<span class="unit">M</span></div><div class="kpi-meta kpi-up">▲ 4.2% vs yesterday</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:72%"></div></div></div>
+    <div class="kpi-card"><div class="kpi-label">Liquidity Ratio</div><div class="kpi-val">1.34<span class="unit">x</span></div><div class="kpi-meta kpi-warn">▲ 0.03 from prior week</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:54%;background:#F5A623"></div></div></div>
+    <div class="kpi-card"><div class="kpi-label">Real-time Risk Index</div><div class="kpi-val">0.081</div><div class="kpi-meta kpi-danger">▼ ELEVATED · 09:42 UTC</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:28%;background:#FF4040"></div></div></div>
+  </div>
+  <div class="viz-container">
+    <div class="viz-header">
+      <span class="viz-title">Live Money Flow · Intraday</span>
+      <div class="viz-meta"><span class="viz-badge">LIVE</span><span class="viz-badge" style="border-color:rgba(255,255,255,0.1);background:transparent;color:var(--muted)">1D · 15m</span><span class="viz-time">09:47:32 UTC</span></div>
+    </div>
+    <div class="viz-body">
+      <div class="y-labels"><span class="y-label">850M</span><span class="y-label">640M</span><span class="y-label">430M</span><span class="y-label">210M</span><span class="y-label">0</span></div>
+      <div class="chart-area">
+        <svg width="100%" height="100%" viewBox="0 0 694 120" preserveAspectRatio="none">
+          <defs><linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0047FF" stop-opacity="0.22"/><stop offset="100%" stop-color="#0047FF" stop-opacity="0.01"/></linearGradient></defs>
+          <line x1="0" y1="0" x2="694" y2="0" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
+          <line x1="0" y1="30" x2="694" y2="30" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
+          <line x1="0" y1="60" x2="694" y2="60" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
+          <line x1="0" y1="90" x2="694" y2="90" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
+          <line x1="0" y1="120" x2="694" y2="120" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
+          <path d="M0,95 C18,90 32,72 50,68 C68,64 80,80 99,76 C118,72 130,50 148,42 C166,34 178,55 198,50 C218,45 230,28 248,22 C266,16 278,35 297,30 C316,25 328,40 347,36 C366,32 378,14 396,10 C414,6 426,25 446,22 C466,19 478,42 495,40 C513,38 526,18 545,15 C563,12 576,32 594,28 C612,24 632,48 654,45 C666,43 680,58 694,55 L694,120 L0,120 Z" fill="url(#areaGrad)"/>
+          <path d="M0,95 C18,90 32,72 50,68 C68,64 80,80 99,76 C118,72 130,50 148,42 C166,34 178,55 198,50 C218,45 230,28 248,22 C266,16 278,35 297,30 C316,25 328,40 347,36 C366,32 378,14 396,10 C414,6 426,25 446,22 C466,19 478,42 495,40 C513,38 526,18 545,15 C563,12 576,32 594,28 C612,24 632,48 654,45 C666,43 680,58 694,55" fill="none" stroke="#0047FF" stroke-width="1.5"/>
+          <rect x="373" y="0" width="75" height="120" fill="rgba(255,64,64,0.04)" rx="2"/>
+          <line x1="396" y1="0" x2="396" y2="120" stroke="rgba(255,64,64,0.3)" stroke-width="0.8" stroke-dasharray="3 3"/>
+          <text x="400" y="10" fill="rgba(255,100,100,0.7)" font-family="DM Mono,monospace" font-size="7">ANOMALY</text>
+        </svg>
+      </div>
+      <div class="x-labels"><span class="x-label">08:00</span><span class="x-label">08:30</span><span class="x-label">09:00</span><span class="x-label">09:15</span><span class="x-label">09:30</span><span class="x-label">09:45</span><span class="x-label">NOW</span></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+</textarea>
+
+  <!-- NOC Dashboard Data (Enterprise 2) -->
+  <textarea id="app-noc" style="display:none;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=800">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #0C0C0E; --panel: #111115; --cobalt: #0047FF; --cyan: #00E5FF; --fault: #FF3366; --glass: rgba(17,17,21,0.62); --border: rgba(255,255,255,0.08); }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 800px; height: 450px; overflow: hidden; background: var(--bg); font-family: 'DM Sans', sans-serif; display: flex; }
+  .map { position: absolute; inset: 0; background-color: var(--bg); background-image: linear-gradient(rgba(0,71,255,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(0,71,255,0.07) 1px, transparent 1px), radial-gradient(ellipse 70% 60% at 65% 52%, rgba(0,71,255,0.09) 0%, transparent 70%); background-size: 32px 32px, 32px 32px, 100% 100%; }
+  .map-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  @keyframes pulse-cyan { 0%,100% { r: 6; opacity: .9; } 50% { r: 10; opacity: .4; } }
+  @keyframes pulse-fault { 0%,100% { r: 6; opacity: 1; } 40% { r: 12; opacity: .3; } }
+  .node-core { animation: pulse-cyan 2.8s ease-in-out infinite; }
+  .node-core-fault { animation: pulse-fault 1.1s ease-in-out infinite; }
+  .sidebar { position: relative; z-index: 10; width: 250px; height: 450px; background: var(--glass); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 0; }
+  .sidebar-header { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+  .header-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); }
+  .sidebar-title { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: .12em; color: rgba(255,255,255,0.35); text-transform: uppercase; }
+  .section-label { font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,0.25); padding: 10px 16px 6px; }
+  .engineers { padding: 0 12px; display: flex; flex-direction: column; gap: 7px; }
+  .eng-card { display: flex; align-items: center; gap: 10px; padding: 7px 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 6px; }
+  .avatar { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Share Tech Mono', monospace; font-size: 11px; border: 1.5px solid; }
+  .av-a { background: rgba(0,71,255,.18); border-color: rgba(0,71,255,.5); color: #6699ff; }
+  .eng-info { flex: 1; }
+  .eng-name { font-size: 11px; color: rgba(255,255,255,0.85); }
+  .eng-role { font-family: 'Share Tech Mono', monospace; font-size: 8px; color: rgba(255,255,255,0.3); }
+  .faults { padding: 0 12px; display: flex; flex-direction: column; gap: 9px; }
+  .fault-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .fault-name { font-size: 10px; color: rgba(255,255,255,0.7); }
+  .bar-track { height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; }
+  .bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--cobalt), var(--cyan)); width: 78%; }
+  .hud { position: absolute; top: 14px; right: 14px; z-index: 10; display: flex; gap: 8px; }
+  .hud-chip { background: var(--glass); border: 1px solid var(--border); border-radius: 4px; padding: 5px 10px; font-family: 'Share Tech Mono', monospace; font-size: 8px; text-transform: uppercase; }
+  .hud-chip .val { font-size: 14px; display: block; color: #fff; }
+</style>
+</head>
+<body>
+<div class="map">
+  <svg class="map-svg" viewBox="0 0 800 450">
+    <g stroke="rgba(0,229,255,0.18)" stroke-width="1" stroke-dasharray="5 6" fill="none"><line x1="390" y1="155" x2="510" y2="230"/><line x1="510" y1="230" x2="620" y2="190"/><line x1="510" y1="230" x2="555" y2="330"/></g>
+    <circle class="node-core" cx="510" cy="230" r="6" fill="var(--cyan)"/><text x="510" y="216" fill="rgba(0,229,255,.65)" font-family="Share Tech Mono" font-size="8" text-anchor="middle">TW-04</text>
+    <circle class="node-core" cx="390" cy="155" r="5" fill="var(--cyan)"/><text x="390" y="141" fill="rgba(0,229,255,.55)" font-family="Share Tech Mono" font-size="8" text-anchor="middle">TW-02</text>
+    <circle class="node-core-fault" cx="310" cy="260" r="6" fill="var(--fault)"/><text x="310" y="246" fill="rgba(255,51,102,.85)" font-family="Share Tech Mono" font-size="8" text-anchor="middle">TW-06</text>
+  </svg>
+</div>
+<aside class="sidebar">
+  <div class="sidebar-header"><div class="header-dot"></div><div class="sidebar-title">Field Ops &amp; Network Mgmt</div></div>
+  <div class="section-label">Active Field Engineers</div>
+  <div class="engineers">
+    <div class="eng-card"><div class="avatar av-a">RK</div><div class="eng-info"><div class="eng-name">R. Krishnamurthy</div><div class="eng-role">RF · Sector North</div></div></div>
+  </div>
+  <div class="section-label" style="margin-top:10px">Live Fault Resolutions</div>
+  <div class="faults">
+    <div class="fault-item"><div class="fault-top"><span class="fault-name">TW-06 · Carrier Sync Loss</span></div><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div></div>
+  </div>
+</aside>
+<div class="hud">
+  <div class="hud-chip ok"><span class="val" style="color:var(--cyan)">12</span><span class="lbl">Towers Online</span></div>
+  <div class="hud-chip alert"><span class="val" style="color:var(--fault)">1</span><span class="lbl">Fault Active</span></div>
+</div>
+</body>
+</html>
+</textarea>
+
+  <!-- Sinhala Voice Agent Data (Enterprise 3) -->
+  <textarea id="app-voice" style="display:none;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #0C0C0E; --blue: #0047FF; --green: #00FF66; --text-muted: rgba(255,255,255,0.35); --text-dim: rgba(255,255,255,0.55); --mono: 'DM Mono', monospace; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #060608; display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: var(--mono); }
+  .card { width: 800px; height: 450px; background: var(--bg); position: relative; border: 1px solid rgba(0,71,255,0.2); }
+  .topbar { position: absolute; top: 0; left: 0; right: 0; height: 32px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid rgba(0,71,255,0.15); background: rgba(0,71,255,0.04); }
+  .topbar-id { font-size: 9px; letter-spacing: 0.18em; color: var(--blue); }
+  .layout { position: absolute; top: 32px; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: 240px 1fr 172px; }
+  .terminal { border-right: 1px solid rgba(0,71,255,0.12); padding: 16px 14px; display: flex; flex-direction: column; }
+  .term-header { font-size: 8px; color: var(--blue); margin-bottom: 10px; }
+  .term-line { font-size: 9.5px; color: var(--text-dim); }
+  .term-line.prompt { color: var(--blue); } .term-line.success { color: var(--green); }
+  .center { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+  .waveform { display: flex; align-items: center; gap: 5px; height: 90px; }
+  .bar { width: 5px; background: var(--blue); border-radius: 3px; height: 40px; animation: wave 1s ease-in-out infinite alternate; }
+  @keyframes wave { 0% { height: 10px; opacity: 0.5; } 100% { height: 60px; opacity: 1; } }
+  .bar:nth-child(even) { animation-delay: 0.2s; }
+  .sidebar { border-left: 1px solid rgba(0,71,255,0.12); padding: 14px 12px; display: flex; flex-direction: column; gap: 10px; }
+  .widget { background: rgba(0,71,255,0.05); border: 1px solid rgba(0,71,255,0.14); padding: 10px; }
+  .widget-val { font-size: 22px; color: var(--green); }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="topbar"><div class="topbar-id">SIN-VAD :: NODE_07</div></div>
+  <div class="layout">
+    <div class="terminal">
+      <div class="term-header">// NLP Intent Engine</div>
+      <div class="term-line prompt">&gt; Language: Sinhala (Conf: 99.2%)</div>
+      <div class="term-line success">  ✓ Routing → BILLING_SVC</div>
+    </div>
+    <div class="center">
+      <div class="waveform"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+    </div>
+    <div class="sidebar">
+      <div class="widget"><div class="widget-val">99.2%</div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+</textarea>
+
+  <!-- Retail Platform Data (Enterprise 4) -->
+  <textarea id="app-retail" style="display:none;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #0C0C0E; --panel: #111115; --blue: #0047FF; --green: #00D47E; --text-primary: rgba(255,255,255,0.92); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); width: 800px; height: 450px; font-family: 'IBM Plex Sans', sans-serif; display: flex; color: var(--text-primary); }
+  .sidebar { width: 40px; background: var(--panel); border-right: 1px solid #222; }
+  .main { flex: 1; display: grid; grid-template-columns: 1fr 220px; grid-template-rows: auto 1fr; gap: 8px; padding: 8px; }
+  .header { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; }
+  .sku-panel { background: var(--panel); border: 1px solid #222; padding: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 10px; }
+  th, td { padding: 6px; text-align: left; border-bottom: 1px solid #222; }
+</style>
+</head>
+<body>
+<div class="sidebar"></div>
+<div class="main">
+  <div class="header">
+    <div>Omnichannel Intelligence</div>
+    <div style="font-family:'JetBrains Mono'; color:var(--green)">$2.41M GMV</div>
+  </div>
+  <div class="sku-panel" style="grid-column: 1 / -1;">
+    <table>
+      <tr><th>Product</th><th>Channel</th><th>Revenue</th></tr>
+      <tr><td>AX-7 Pro Wireless</td><td>OMNI</td><td>$312.4K</td></tr>
+      <tr><td>CoreFlex Band XL</td><td>STORE</td><td>$278.1K</td></tr>
+    </table>
+  </div>
+</div>
+</body>
+</html>
+</textarea>
+
+
+  <!-- ── NEW TEXTAREAS FOR CLIENT WORK APPS ── -->
+
+  <!-- Aura E-Commerce Data (Client 1) -->
+  <textarea id="app-aura" style="display:none;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=800">
+<title>Aura Luxury</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #0A0A0C; --text: #F5F5F7; --gold: #D4AF37; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 800px; height: 450px; background: var(--bg); font-family: 'Inter', sans-serif; color: var(--text); overflow: hidden; display: flex; }
+  .sidebar { width: 80px; border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; padding: 30px 0; }
+  .logo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600; writing-mode: vertical-rl; transform: rotate(180deg); letter-spacing: 4px; }
+  .main { flex: 1; padding: 40px 60px; display: flex; flex-direction: column; position: relative; }
+  .nav { display: flex; gap: 30px; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.5); }
+  .nav span.active { color: var(--gold); border-bottom: 1px solid var(--gold); padding-bottom: 4px; }
+  .content { flex: 1; display: flex; align-items: center; justify-content: space-between; margin-top: 20px; }
+  .text-col { max-width: 280px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 400; line-height: 1.1; margin-bottom: 20px; }
+  p { font-size: 12px; line-height: 1.8; color: rgba(255,255,255,0.6); margin-bottom: 30px; }
+  .btn { display: inline-block; padding: 12px 28px; border: 1px solid var(--gold); color: var(--gold); text-transform: uppercase; font-size: 10px; letter-spacing: 2px; text-decoration: none; }
+  .image-col { width: 280px; height: 320px; position: relative; }
+  .img-bg { position: absolute; inset: 0; background: linear-gradient(45deg, #1A1A1D, #2C2C30); overflow: hidden; }
+  .img-bg::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(212,175,55,0.1), transparent 70%); }
+  .img-card { position: absolute; bottom: -20px; left: -40px; width: 200px; height: 260px; background: #161618; border: 1px solid rgba(255,255,255,0.05); padding: 20px; box-shadow: 20px 20px 40px rgba(0,0,0,0.5); }
+  .card-title { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 5px; }
+  .card-price { font-size: 12px; color: var(--gold); }
+</style>
+</head>
+<body>
+  <div class="sidebar"><div class="logo">AURA</div></div>
+  <div class="main">
+    <div class="nav"><span class="active">Collection</span><span>Editorial</span><span>Atelier</span></div>
+    <div class="content">
+      <div class="text-col">
+        <h1>Silken<br><i>Shadows</i></h1>
+        <p>Discover the new Autumn/Winter collection. A study in contrasts, blending stark architectural lines with fluid, organic forms.</p>
+        <a href="#" class="btn">Explore</a>
+      </div>
+      <div class="image-col">
+        <div class="img-bg"></div>
+        <div class="img-card">
+          <div style="width:100%; height:160px; background:rgba(255,255,255,0.03); margin-bottom:15px;"></div>
+          <div class="card-title">Onyx Tote</div>
+          <div class="card-price">$1,250</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+</textarea>
+
+  <!-- Lumina Mobile App Data (Client 2) -->
+  <textarea id="app-lumina" style="display:none;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=800">
+<title>Lumina</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #0C0A14; --purple: #6B4CE6; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 800px; height: 450px; background: var(--bg); font-family: 'Outfit', sans-serif; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .blur-bg { position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, rgba(107,76,230,0.15) 0%, transparent 70%); border-radius: 50%; }
+  .phone { width: 260px; height: 410px; background: #13111C; border-radius: 30px; border: 4px solid #232033; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden; padding: 20px; display: flex; flex-direction: column; z-index: 2; }
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .greeting { font-size: 18px; font-weight: 500; color: #fff; }
+  .streak { background: rgba(107,76,230,0.2); color: #A085FF; padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 600; }
+  .circle-wrap { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
+  .circle { width: 160px; height: 160px; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; flex-direction: column; position: relative; }
+  .circle::before { content: ''; position: absolute; inset: -10px; border-radius: 50%; border: 2px solid var(--purple); border-right-color: transparent; border-bottom-color: transparent; transform: rotate(45deg); }
+  .time { font-size: 32px; font-weight: 300; color: #fff; }
+  .lbl { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 2px; }
+  .cards { display: flex; gap: 10px; margin-top: auto; }
+  .card { flex: 1; background: #1C1929; border-radius: 12px; padding: 12px; }
+  .c-title { font-size: 11px; color: #fff; margin-bottom: 4px; }
+  .c-sub { font-size: 9px; color: rgba(255,255,255,0.5); }
+</style>
+</head>
+<body>
+  <div class="blur-bg"></div>
+  <div class="phone">
+    <div class="header">
+      <div class="greeting">Morning, Jane</div>
+      <div class="streak">🔥 12 Days</div>
+    </div>
+    <div class="circle-wrap">
+      <div class="circle">
+        <div class="time">15:00</div>
+        <div class="lbl">Breathe</div>
+      </div>
+    </div>
+    <div class="cards">
+      <div class="card"><div class="c-title">Deep Sleep</div><div class="c-sub">45 min</div></div>
+      <div class="card"><div class="c-title">Focus</div><div class="c-sub">20 min</div></div>
+    </div>
+  </div>
+</body>
+</html>
+</textarea>
+
+  <!-- Nova Web App Data (Client 3) -->
+  <textarea id="app-nova" style="display:none;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=800">
+<title>Nova Real Estate</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500&family=Manrope:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #0F0F11; --panel: #161619; --accent: #FF5500; --text: #FFFFFF; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 800px; height: 450px; background: var(--bg); font-family: 'Manrope', sans-serif; color: var(--text); overflow: hidden; display: flex; }
+  .sidebar { width: 220px; background: var(--panel); padding: 24px; display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,0.05); }
+  .logo { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 500; letter-spacing: 1px; margin-bottom: 40px; display: flex; align-items: center; gap: 8px; }
+  .logo::before { content: ''; width: 12px; height: 12px; background: var(--accent); }
+  .prop-title { font-size: 20px; font-family: 'Space Grotesk', sans-serif; margin-bottom: 8px; }
+  .prop-loc { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 24px; }
+  .price { font-size: 24px; font-family: 'Space Grotesk', sans-serif; color: var(--accent); margin-bottom: 30px; }
+  .specs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: auto; }
+  .spec-lbl { font-size: 9px; text-transform: uppercase; color: rgba(255,255,255,0.4); letter-spacing: 1px; }
+  .spec-val { font-size: 14px; margin-top: 4px; }
+  .btn { background: var(--text); color: var(--bg); text-align: center; padding: 12px; font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+  .main-view { flex: 1; position: relative; background: linear-gradient(120deg, #1c1c1f, #111113); display: flex; align-items: center; justify-content: center; }
+  .view-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 40px 40px; }
+  .wireframe { width: 300px; height: 200px; border: 1px solid rgba(255,255,255,0.1); position: relative; transform: perspective(800px) rotateY(-15deg) rotateX(5deg); }
+  .wireframe::after { content: '3D VIRTUAL TOUR ACTIVE'; position: absolute; bottom: 20px; left: 20px; font-family: 'Space Grotesk', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); }
+  .hud { position: absolute; top: 24px; right: 24px; display: flex; gap: 10px; }
+  .hud-btn { width: 32px; height: 32px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; }
+</style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">NOVA</div>
+    <div class="prop-title">The Glasshouse</div>
+    <div class="prop-loc">West Hollywood, CA</div>
+    <div class="price">$4,250,000</div>
+    <div class="specs">
+      <div><div class="spec-lbl">Beds</div><div class="spec-val">4</div></div>
+      <div><div class="spec-lbl">Baths</div><div class="spec-val">3.5</div></div>
+      <div><div class="spec-lbl">Sq Ft</div><div class="spec-val">3,800</div></div>
+      <div><div class="spec-lbl">Type</div><div class="spec-val">Villa</div></div>
+    </div>
+    <div class="btn">Book Viewing</div>
+  </div>
+  <div class="main-view">
+    <div class="view-grid"></div>
+    <div class="wireframe"></div>
+    <div class="hud"><div class="hud-btn"></div><div class="hud-btn"></div></div>
+  </div>
+</body>
+</html>
+</textarea>
+
+  <!-- Sync Digital Platform Data (Client 4) -->
+  <textarea id="app-sync" style="display:none;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=800">
+<title>Sync Music</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #0A0A0C; --panel: #141418; --cyan: #00FFF5; --pink: #FF00AA; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 800px; height: 450px; background: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; color: #fff; display: flex; flex-direction: column; overflow: hidden; }
+  .header { height: 60px; display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .logo { font-size: 16px; font-weight: 700; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+  .logo span { color: var(--cyan); }
+  .nav { margin-left: 40px; display: flex; gap: 20px; font-size: 12px; color: rgba(255,255,255,0.6); }
+  .nav .active { color: #fff; }
+  .main { flex: 1; display: flex; padding: 24px; gap: 24px; }
+  .content { flex: 1; }
+  .hero-banner { height: 140px; background: linear-gradient(45deg, rgba(255,0,170,0.2), rgba(0,255,245,0.1)), var(--panel); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; justify-content: flex-end; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.05); }
+  .hero-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--cyan); margin-bottom: 8px; }
+  .hero-title { font-size: 28px; font-weight: 700; }
+  .track-list { display: flex; flex-direction: column; gap: 8px; }
+  .track { display: flex; align-items: center; padding: 10px 16px; background: rgba(255,255,255,0.02); border-radius: 8px; gap: 16px; }
+  .track:hover { background: rgba(255,255,255,0.05); }
+  .t-num { font-size: 11px; color: rgba(255,255,255,0.4); width: 16px; }
+  .t-info { flex: 1; }
+  .t-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .t-artist { font-size: 11px; color: rgba(255,255,255,0.5); }
+  .t-time { font-size: 11px; color: rgba(255,255,255,0.4); }
+  .sidebar { width: 220px; background: var(--panel); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; }
+  .s-title { font-size: 12px; font-weight: 600; margin-bottom: 16px; color: rgba(255,255,255,0.6); }
+  .friend { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .f-avatar { width: 28px; height: 28px; border-radius: 50%; background: #222; }
+  .f-name { font-size: 11px; font-weight: 600; }
+  .f-status { font-size: 9px; color: var(--cyan); }
+  .player { height: 70px; background: #0F0F12; border-top: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; padding: 0 24px; gap: 20px; }
+  .p-info { display: flex; align-items: center; gap: 12px; width: 200px; }
+  .p-art { width: 40px; height: 40px; background: linear-gradient(135deg, var(--pink), var(--cyan)); border-radius: 4px; }
+  .p-controls { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .p-bar { width: 300px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; }
+  .p-fill { width: 45%; height: 100%; background: var(--cyan); border-radius: 2px; box-shadow: 0 0 8px rgba(0,255,245,0.5); }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">SYNC<span>.</span></div>
+    <div class="nav"><span class="active">Discover</span><span>Library</span><span>Collab</span></div>
+  </div>
+  <div class="main">
+    <div class="content">
+      <div class="hero-banner">
+        <div class="hero-tag">Live Session</div>
+        <div class="hero-title">Midnight Synthwave</div>
+      </div>
+      <div class="track-list">
+        <div class="track"><div class="t-num">1</div><div class="t-info"><div class="t-title">Neon Rain</div><div class="t-artist">Kavinsky</div></div><div class="t-time">4:12</div></div>
+        <div class="track"><div class="t-num" style="color:var(--cyan)">▶</div><div class="t-info"><div class="t-title" style="color:var(--cyan)">Nightcall</div><div class="t-artist">Lazerhawk</div></div><div class="t-time">3:45</div></div>
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="s-title">Listening Now</div>
+      <div class="friend"><div class="f-avatar"></div><div><div class="f-name">Alex R.</div><div class="f-status">Vibing to Synthwave</div></div></div>
+      <div class="friend"><div class="f-avatar"></div><div><div class="f-name">Sarah M.</div><div class="f-status">Added 2 tracks</div></div></div>
+    </div>
+  </div>
+  <div class="player">
+    <div class="p-info">
+      <div class="p-art"></div>
+      <div><div class="t-title">Nightcall</div><div class="t-artist">Lazerhawk</div></div>
+    </div>
+    <div class="p-controls">
+      <div style="display:flex;gap:16px;font-size:12px"><span>⏮</span><span>⏸</span><span>⏭</span></div>
+      <div class="p-bar"><div class="p-fill"></div></div>
+    </div>
+    <div style="width:200px"></div>
+  </div>
+</body>
+</html>
+</textarea>
+
+  <!-- ── INTEGRATION SCRIPT ── -->
+  <script>
+    // ── Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ── Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      setTimeout(() => {
+        ring.style.left = e.clientX + 'px';
+        ring.style.top = e.clientY + 'px';
+      }, 80);
+    });
+
+    // ── Navbar scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // ── Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+    reveals.forEach(el => observer.observe(el));
+
+    // ── CONTACT FORM SUBMISSION ──
+    const contactForm = document.getElementById('contact-form');
+    const submitBtn = document.getElementById('cf-submit');
+
+    if (contactForm) {
+      contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Sending...';
+        submitBtn.disabled = true;
+
+        const payload = {
+          name: document.getElementById('cf-name').value,
+          company: document.getElementById('cf-company').value,
+          email: document.getElementById('cf-email').value,
+          brief: document.getElementById('cf-brief').value,
+          budget: document.getElementById('cf-budget').value
+        };
+
+        try {
+          // Change 'localhost' to your actual server IP or domain when deploying
+          const response = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (response.ok) {
+            submitBtn.textContent = 'Message Sent Successfully';
+            submitBtn.style.background = '#00D47E'; // Success Green
+            contactForm.reset();
+          } else {
+            submitBtn.textContent = 'Error Sending Request';
+            submitBtn.style.background = '#FF3B5C'; // Error Red
+          }
+        } catch (err) {
+          submitBtn.textContent = 'Network Error - Try Again';
+          submitBtn.style.background = '#FF3B5C';
+        }
+
+        setTimeout(() => {
+          submitBtn.textContent = originalText;
+          submitBtn.style.background = '';
+          submitBtn.disabled = false;
+        }, 4000);
+      });
+    }
+
+    // ── EMBEDDED APPS LOADER ── 
+    function loadEmbeddedApps() {
+      const apps = [
+        // Enterprise Apps
+        { id: 'img-bank', dataId: 'app-bank' },
+        { id: 'img-noc', dataId: 'app-noc' },
+        { id: 'img-voice', dataId: 'app-voice' },
+        { id: 'img-retail', dataId: 'app-retail' },
+        // Client Apps
+        { id: 'img-aura', dataId: 'app-aura' },
+        { id: 'img-lumina', dataId: 'app-lumina' },
+        { id: 'img-nova', dataId: 'app-nova' },
+        { id: 'img-sync', dataId: 'app-sync' }
+      ];
+
+      // CSS/JS injection to perfectly scale embedded 800x450 applications within the responsive grid 
+      const scaleInject = `
+      <style>
+        ::-webkit-scrollbar { display: none; }
+        html, body {
+          margin: 0 !important; padding: 0 !important;
+          width: 800px !important; height: 450px !important;
+          overflow: hidden !important;
+          transform-origin: top left !important;
+          background-color: transparent !important;
+        }
+        .mockup, .card, body { 
+          box-shadow: none !important; 
+          border: none !important; 
+          border-radius: 0 !important; 
+          margin: 0 !important;
+          width: 100% !important;
+          height: 100% !important;
+        }
+      </style>
+      <script>
+        function setScale() {
+          const scale = window.innerWidth / 800;
+          document.body.style.transform = 'scale(' + scale + ')';
+        }
+        window.addEventListener('resize', setScale);
+        setScale();
+      <\/script>
+    `;
+
+      apps.forEach(app => {
+        const container = document.getElementById(app.id);
+        const dataNode = document.getElementById(app.dataId);
+        if (!container || !dataNode) return;
+
+        const iframe = document.createElement('iframe');
+        iframe.className = 'portfolio-iframe';
+
+        // We prepend it so the overlay gradients naturally sit on top 
+        container.insertBefore(iframe, container.firstChild);
+
+        const doc = iframe.contentWindow.document;
+        doc.open();
+
+        let rawHtml = dataNode.value;
+        rawHtml = rawHtml.replace('</body>', scaleInject + '</body>');
+
+        doc.write(rawHtml);
+        doc.close();
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', loadEmbeddedApps);
+  </script>
+
+</body>
+
+</html>

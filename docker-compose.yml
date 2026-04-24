@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    env_file:
+      - .env.prod
+    # Binding to 127.0.0.1 ensures it's only accessible via your reverse proxy
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - ./data:/app/data
+    restart: always
