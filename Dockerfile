@@ -7,6 +7,7 @@ RUN npm install --production
 # Copy server code and the public folder (HTML)
 COPY server.js ./
 COPY public ./public
+COPY projects ./projects
 
 RUN mkdir data
 EXPOSE 3000
