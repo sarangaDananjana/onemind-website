@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>One Mind | Reimagine Admin</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #0C0C0E;
+            --bg2: #111115;
+            --white: #F4F4F5;
+            --grey: #6B7280;
+            --cobalt: #0047FF;
+            --border: rgba(255, 255, 255, 0.07);
+            --font-display: 'Syne', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+            --font-mono: 'DM Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--white);
+            font-family: var(--font-body);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Login Screen */
+        #login-screen {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg);
+        }
+
+        .login-box {
+            background: var(--bg2);
+            padding: 40px;
+            border: 1px solid var(--border);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-title {
+            font-family: var(--font-display);
+            font-size: 24px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        /* Dashboard */
+        #dashboard {
+            display: none;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 240px;
+            border-right: 1px solid var(--border);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg2);
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: var(--white);
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            color: var(--grey);
+            transition: 0.2s;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .nav-item.active,
+        .nav-item:hover {
+            background: rgba(0, 71, 255, 0.1);
+            color: var(--cobalt);
+            border-left: 2px solid var(--cobalt);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        /* Forms & Inputs */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--grey);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--white);
+            padding: 12px;
+            font-family: var(--font-body);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            border-color: var(--cobalt);
+        }
+
+        .form-textarea {
+            height: 200px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: var(--cobalt);
+            color: var(--white);
+            border: none;
+            padding: 12px 24px;
+            font-family: var(--font-body);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background: #0038CC;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--white);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        th {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--grey);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .action-link {
+            color: var(--cobalt);
+            text-decoration: none;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        .action-link:hover {
+            text-decoration: underline;
+        }
+
+        .action-danger {
+            color: #FF3B5C;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 28px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--cobalt);
+            color: white;
+            padding: 12px 24px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: 0.3s;
+            z-index: 1000;
+        }
+
+        #notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Login Screen -->
+    <div id="login-screen">
+        <div class="login-box">
+            <h1 class="login-title">One Mind Admin</h1>
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" id="username" class="form-input" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" id="password" class="form-input" />
+            </div>
+            <button class="btn" style="width: 100%" onclick="login()">Login</button>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="hidden">
+        <div class="sidebar">
+            <div class="logo">OM. ADMIN</div>
+            <div class="nav-item active" onclick="switchTab('clients')">Showcase Clients</div>
+            <div class="nav-item" onclick="switchTab('replies')">Interest Replies</div>
+            <div style="flex:1"></div>
+            <div class="nav-item" onclick="logout()">Logout</div>
+        </div>
+
+        <div class="main-content">
+
+            <!-- Clients Tab -->
+            <div id="tab-clients">
+                <div class="section-title">
+                    <span>Reimagined Clients</span>
+                    <button class="btn" onclick="showAddClient()">+ New Client</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Client Name</th>
+                            <th>URL Slug</th>
+                            <th>Original URL</th>
+                            <th>Date Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clients-table-body"></tbody>
+                </table>
+            </div>
+
+            <!-- Replies Tab -->
+            <div id="tab-replies" class="hidden">
+                <div class="section-title">Interest Replies</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Client Name</th>
+                            <th>Contact Name</th>
+                            <th>Phone Number</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="replies-table-body"></tbody>
+                </table>
+            </div>
+
+            <!-- Add/Edit Client Form (Hidden by default) -->
+            <div id="tab-client-form" class="hidden">
+                <div class="section-title">Add New Reimagine Showcase</div>
+                <form id="client-form" onsubmit="submitClient(event)">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                        <div class="form-group">
+                            <label class="form-label">Client / Company Name</label>
+                            <input type="text" name="clientName" class="form-input" required
+                                placeholder="e.g. Acme Corp">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Contact Email (Internal use)</label>
+                            <input type="email" name="contactEmail" class="form-input" placeholder="client@acme.com">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Original Website URL (Must include https://)</label>
+                        <input type="url" name="oldUrl" class="form-input" required
+                            placeholder="https://www.oldwebsite.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Reimagined HTML Code</label>
+                        <textarea name="reimaginedHtml" class="form-textarea" required
+                            placeholder="Paste the fully styled HTML here..."></textarea>
+                        <p style="font-size: 11px; color: var(--grey); margin-top: 8px;">
+                            * Note: If uploading images below, reference them in your HTML using exactly the filename.
+                            e.g., <code>&lt;img src="/reimagine-assets/[slug]/logo.png"&gt;</code> (We will
+                            auto-generate the [slug] folder).
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Upload Assets (Images, Videos, etc. - Multiple allowed)</label>
+                        <input type="file" name="assets" id="assetsInput" class="form-input" multiple
+                            style="padding: 9px;">
+                    </div>
+                    <div style="display: flex; gap: 16px; margin-top: 32px;">
+                        <button type="submit" class="btn" id="submit-btn">Save & Publish Showcase</button>
+                        <button type="button" class="btn btn-outline" onclick="switchTab('clients')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="notification"></div>
+
+    <script>
+        let token = localStorage.getItem('om_token');
+
+        // Init
+        if (token) {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            loadClients();
+            loadReplies();
+        }
+
+        function showToast(msg) {
+            const notif = document.getElementById('notification');
+            notif.innerText = msg;
+            notif.classList.add('show');
+            setTimeout(() => notif.classList.remove('show'), 3000);
+        }
+
+        async function login() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const res = await fetch('/api/admin/login', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass })
+            });
+            const data = await res.json();
+            if (data.success) {
+                token = data.token;
+                localStorage.setItem('om_token', token);
+                location.reload();
+            } else {
+                alert('Invalid credentials');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('om_token');
+            location.reload();
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('tab-clients').classList.add('hidden');
+            document.getElementById('tab-replies').classList.add('hidden');
+            document.getElementById('tab-client-form').classList.add('hidden');
+            document.getElementById('tab-' + tab).classList.remove('hidden');
+        }
+
+        function showAddClient() {
+            document.getElementById('client-form').reset();
+            document.getElementById('tab-clients').classList.add('hidden');
+            document.getElementById('tab-client-form').classList.remove('hidden');
+        }
+
+        async function loadClients() {
+            const res = await fetch('/api/admin/clients', { headers: { 'Authorization': `Bearer ${token}` } });
+            if (res.status === 401) return logout();
+            const clients = await res.json();
+            const tbody = document.getElementById('clients-table-body');
+            tbody.innerHTML = '';
+            clients.forEach(c => {
+                tbody.innerHTML += `
+          <tr>
+            <td style="font-weight: 500">${c.clientName}</td>
+            <td style="font-family: var(--font-mono); font-size: 12px;">/reimagine/${c.slug}</td>
+            <td><a href="${c.oldUrl}" target="_blank" style="color:var(--grey)">${c.oldUrl.substring(0, 30)}...</a></td>
+            <td>${new Date(c.createdAt).toLocaleDateString()}</td>
+            <td>
+              <a href="/reimagine/${c.slug}" target="_blank" class="action-link">View</a>
+              <span class="action-link action-danger" onclick="deleteClient('${c.slug}')">Delete</span>
+            </td>
+          </tr>
+        `;
+            });
+        }
+
+        async function loadReplies() {
+            const res = await fetch('/api/admin/replies', { headers: { 'Authorization': `Bearer ${token}` } });
+            const replies = await res.json();
+            const tbody = document.getElementById('replies-table-body');
+            tbody.innerHTML = '';
+            replies.reverse().forEach(r => {
+                tbody.innerHTML += `
+          <tr>
+            <td style="font-weight: 500">${r.clientName}</td>
+            <td>${r.name}</td>
+            <td style="font-family: var(--font-mono); color:var(--cobalt)">${r.phone}</td>
+            <td>${new Date(r.timestamp).toLocaleString()}</td>
+          </tr>
+        `;
+            });
+        }
+
+        async function submitClient(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            btn.innerText = 'Uploading...'; btn.disabled = true;
+
+            const form = document.getElementById('client-form');
+            const formData = new FormData(form);
+
+            // We need to inject the proper asset paths into the HTML before sending if they didn't do it manually.
+            // But the backend already handles assets gracefully.
+
+            try {
+                const res = await fetch('/api/admin/clients', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    showToast('Showcase Published Successfully!');
+                    form.reset();
+                    loadClients();
+                    switchTab('clients');
+                    document.querySelectorAll('.nav-item')[0].classList.add('active'); // reset active state
+                } else {
+                    alert(data.error || 'Failed to upload');
+                }
+            } catch (err) {
+                alert('Network error');
+            }
+
+            btn.innerText = 'Save & Publish Showcase'; btn.disabled = false;
+        }
+
+        async function deleteClient(slug) {
+            if (!confirm('Are you sure you want to delete this showcase?')) return;
+            await fetch(`/api/admin/clients/${slug}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+            showToast('Client deleted');
+            loadClients();
+        }
+    </script>
+</body>
+
+</html>
