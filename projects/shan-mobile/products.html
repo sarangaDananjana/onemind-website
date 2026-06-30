@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPhones | Shan Mobile — Certified Pre-Owned</title>
+    <meta name="description"
+        content="Browse P1+ certified pre-owned iPhones at Shan Mobile. iPhone 15, 14 & 13 series with genuine battery health and 1-year warranty. Best prices in Sri Lanka.">
+    <meta name="theme-color" content="#000000">
+    <link rel="icon" href="logo.jpeg" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #C9A96E;
+            --gold-dim: #A68B4B;
+            --gold-light: rgba(201, 169, 110, 0.12);
+            --dark: #000000;
+            --dark-1: #0A0A0A;
+            --dark-2: #111111;
+            --dark-3: #1A1A1A;
+            --light: #FFFFFF;
+            --light-1: #F5F5F7;
+            --light-2: #E8E8ED;
+            --text-w: #F5F5F7;
+            --text-w-mid: #A1A1A6;
+            --text-w-dim: #6E6E73;
+            --text-d: #1D1D1F;
+            --text-d-mid: #515154;
+            --text-d-dim: #86868B;
+            --blue: #0071E3;
+            --green: #30D158;
+            --border-dark: rgba(255, 255, 255, 0.08);
+            --border-light: #D2D2D7;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-1);
+            color: var(--text-d);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ═══ NAV ═══ */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 56px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav.scrolled {
+            border-bottom-color: var(--border-dark);
+            background: rgba(0, 0, 0, 0.88);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-brand img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+        }
+
+        .nav-brand-name {
+            font-weight: 600;
+            font-size: 16px;
+            letter-spacing: -0.02em;
+            color: var(--text-w);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-link {
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--text-w-mid);
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--text-w);
+        }
+
+        .nav-link.active {
+            color: var(--text-w);
+        }
+
+        .nav-cta {
+            font-size: 13px;
+            font-weight: 500;
+            padding: 8px 18px;
+            background: var(--gold);
+            color: var(--dark);
+            border: none;
+            border-radius: 980px;
+            transition: all 0.2s;
+        }
+
+        .nav-cta:hover {
+            background: var(--gold-dim);
+        }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-w);
+            padding: 4px;
+        }
+
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            top: 56px;
+            background: rgba(0, 0, 0, 0.96);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            padding: 40px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            transform: translateY(-120%);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .mobile-menu.open {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .mobile-menu a {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-w);
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-dark);
+            display: block;
+            letter-spacing: -0.02em;
+            transition: color 0.2s;
+        }
+
+        .mobile-menu a:hover {
+            color: var(--gold);
+        }
+
+        @media (max-width: 768px) {
+
+            .nav-links,
+            .nav-cta {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+        }
+
+        /* ═══ GLASSMORPHISM POPUP ═══ */
+        .popup-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 24px;
+        }
+
+        .popup-overlay.hiding {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .popup-overlay.hidden {
+            display: none;
+        }
+
+        .popup-card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 28px;
+            padding: 48px 40px;
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: scale(1) translateY(0);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s;
+        }
+
+        .popup-overlay.hiding .popup-card {
+            transform: scale(0.92) translateY(20px);
+            opacity: 0;
+        }
+
+        .popup-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            margin: 0 auto 24px;
+            background: rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popup-icon svg {
+            width: 28px;
+            height: 28px;
+            color: var(--gold);
+        }
+
+        .popup-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+        }
+
+        .popup-sub {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .popup-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .popup-opt {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 32px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
+            font-family: inherit;
+            position: relative;
+        }
+
+        .popup-opt:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .popup-opt-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popup-opt-icon svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .popup-opt-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .popup-opt-desc {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .popup-opt-warranty {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            width: 100%;
+            text-align: left;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .popup-opt-warranty ul {
+            padding-left: 14px;
+            margin-top: 6px;
+        }
+
+        .popup-opt-warranty li {
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .popup-options {
+                grid-template-columns: 1fr;
+            }
+
+            .popup-card {
+                padding: 32px 24px;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+
+            .popup-title {
+                font-size: 24px;
+            }
+        }
+
+        /* ═══ PAGE HEADER ═══ */
+        .page-header {
+            padding: 100px 0 48px;
+            background: var(--light-1);
+            color: var(--text-d);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at 30% 0%, rgba(138, 43, 226, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 0%, rgba(0, 113, 227, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .page-header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-title {
+            font-size: clamp(36px, 6vw, 56px);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 1.08;
+        }
+
+        .page-title .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #e040fb 50%, #ff6b6b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: var(--text-d-mid);
+            margin-top: 16px;
+            font-weight: 300;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .page-subtitle strong {
+            font-weight: 500;
+            color: var(--text-d);
+        }
+
+        .page-header-stats {
+            display: flex;
+            gap: 32px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
+
+        .ph-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-d-mid);
+        }
+
+        .ph-stat-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--gold);
+        }
+
+        /* ═══ CATEGORY SWITCHER ═══ */
+        .filter-section {
+            position: sticky;
+            top: 56px;
+            z-index: 100;
+            background: rgba(245, 245, 247, 0.85);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--border-light);
+            padding: 14px 0;
+        }
+
+        .filter-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .cat-switcher {
+            display: flex;
+            background: var(--light-2);
+            border-radius: 12px;
+            padding: 3px;
+            position: relative;
+        }
+
+        .cat-btn {
+            font-size: 13px;
+            font-weight: 500;
+            padding: 8px 20px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-d-mid);
+            transition: color 0.3s;
+            letter-spacing: -0.01em;
+            position: relative;
+            z-index: 2;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .cat-btn.active {
+            color: var(--text-d);
+        }
+
+        .cat-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            height: calc(100% - 6px);
+            background: var(--light);
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08), 0 0 1px rgba(0, 0, 0, 0.08);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1;
+        }
+
+        .filter-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .filter-count {
+            font-size: 13px;
+            color: var(--text-d-dim);
+        }
+
+        .sort-select {
+            font-size: 13px;
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border-light);
+            background: var(--light);
+            color: var(--text-d-mid);
+            font-family: inherit;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2386868B' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 32px;
+        }
+
+        /* ═══ PRODUCT GRID ═══ */
+        .products-section {
+            padding: 40px 0 80px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            transition: opacity 0.35s ease;
+        }
+
+        .products-grid.fading {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        @media (max-width: 960px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 540px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .p-card {
+            background: var(--light-1);
+            border: 1px solid var(--border-light);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s, border-color 0.3s;
+            position: relative;
+        }
+
+        .p-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.08);
+            border-color: transparent;
+        }
+
+        .p-card-badge {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            z-index: 2;
+            font-size: 10px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 980px;
+        }
+
+        .badge-dark {
+            background: var(--text-d);
+            color: var(--light);
+        }
+
+        .badge-gold {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .badge-green {
+            background: rgba(48, 209, 88, 0.12);
+            color: #1a8a3e;
+        }
+
+        .p-card-img {
+            height: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--light);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .p-card-img img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .p-card:hover .p-card-img img {
+            transform: scale(1.06);
+        }
+
+        .p-card-body {
+            padding: 24px;
+        }
+
+        .p-card-model {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-d);
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+        }
+
+        .p-card-color-label {
+            font-size: 12px;
+            color: var(--text-d-dim);
+            margin-bottom: 8px;
+        }
+
+        /* ── Color Dot Selectors ── */
+        .p-color-dots {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+            align-items: center;
+        }
+
+        .p-color-dot {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            outline: none;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+        }
+
+        .p-color-dot:hover {
+            transform: scale(1.15);
+        }
+
+        .p-color-dot.selected {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.25), inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+            transform: scale(1.1);
+        }
+
+        .p-storage-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .p-storage-btn {
+            font-size: 11px;
+            padding: 5px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            background: var(--light);
+            color: var(--text-d-mid);
+            transition: all 0.2s;
+            font-family: inherit;
+            font-weight: 500;
+        }
+
+        .p-storage-btn:hover {
+            border-color: var(--text-d-dim);
+            color: var(--text-d);
+        }
+
+        .p-storage-btn.selected {
+            background: var(--text-d);
+            border-color: var(--text-d);
+            color: var(--light);
+        }
+
+        .p-meta-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .p-tag {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: var(--light-1);
+            color: var(--text-d-mid);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .p-tag svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .p-tag-gold {
+            background: var(--gold-light);
+            color: var(--gold-dim);
+        }
+
+        .p-price-row {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding-top: 16px;
+            border-top: 1px solid var(--light-2);
+        }
+
+        .p-from {
+            font-size: 11px;
+            color: var(--text-d-dim);
+            margin-bottom: 2px;
+        }
+
+        .p-price {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-d);
+            letter-spacing: -0.02em;
+            line-height: 1;
+        }
+
+        .p-inquire-btn {
+            font-size: 13px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 980px;
+            background: var(--text-d);
+            color: var(--light);
+            border: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .p-inquire-btn:hover {
+            background: #333;
+        }
+
+        /* ═══ TRUST STRIP ═══ */
+        .trust-strip {
+            background: var(--dark);
+            padding: 56px 0;
+            border-top: 1px solid var(--border-dark);
+        }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .trust-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .trust-item-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--gold-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+        }
+
+        .trust-item-icon svg {
+            width: 22px;
+            height: 22px;
+            color: var(--gold);
+        }
+
+        .trust-item-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-w);
+            margin-bottom: 6px;
+        }
+
+        .trust-item-desc {
+            font-size: 13px;
+            color: var(--text-w-dim);
+            line-height: 1.5;
+        }
+
+        /* ═══ CTA BANNER ═══ */
+        .cta-banner {
+            background: var(--dark);
+            padding: 80px 24px;
+            text-align: center;
+        }
+
+        .cta-banner-title {
+            font-size: clamp(24px, 4vw, 40px);
+            font-weight: 700;
+            color: var(--text-w);
+            letter-spacing: -0.03em;
+            margin-bottom: 16px;
+        }
+
+        .cta-banner-sub {
+            font-size: 16px;
+            color: var(--text-w-mid);
+            font-weight: 300;
+            max-width: 460px;
+            margin: 0 auto 36px;
+            line-height: 1.5;
+        }
+
+        .btn-gold {
+            padding: 14px 32px;
+            border-radius: 980px;
+            font-size: 15px;
+            font-weight: 500;
+            background: var(--gold);
+            color: var(--dark);
+            border: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-gold:hover {
+            background: var(--gold-dim);
+        }
+
+        /* ═══ FOOTER ═══ */
+        .footer {
+            padding: 80px 0 40px;
+            background: var(--dark-1);
+            border-top: 1px solid var(--border-dark);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 64px;
+            margin-bottom: 64px;
+        }
+
+        @media (max-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .footer-brand img {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+        }
+
+        .footer-brand-name {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-w);
+        }
+
+        .footer-desc {
+            font-size: 14px;
+            color: var(--text-w-mid);
+            line-height: 1.6;
+            max-width: 300px;
+        }
+
+        .footer-col-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-w);
+            margin-bottom: 16px;
+        }
+
+        .footer-link {
+            display: block;
+            font-size: 14px;
+            color: var(--text-w-mid);
+            margin-bottom: 12px;
+            transition: color 0.2s;
+        }
+
+        .footer-link:hover {
+            color: var(--gold);
+        }
+
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-dark);
+            flex-wrap: wrap;
+            gap: 12px;
+            color: var(--text-w);
+        }
+
+        .footer-copy {
+            font-size: 12px;
+            color: var(--text-w-dim);
+        }
+
+        /* ═══ ANIMATIONS ═══ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ═══ EMPTY STATE ═══ */
+        .empty-state {
+            text-align: center;
+            padding: 80px 24px;
+            color: var(--text-d-dim);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+        }
+
+        /* ═══ WHATSAPP FLOAT ═══ */
+        .wa-float {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 900;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #25D366;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .wa-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 28px rgba(37, 211, 102, 0.5);
+        }
+
+        .wa-float svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        /* ═══ SCROLL TOP ═══ */
+        .scroll-top {
+            position: fixed;
+            bottom: 28px;
+            right: 96px;
+            z-index: 900;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--text-d);
+            color: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.2s;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-2px);
+        }
+
+        .scroll-top svg {
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <header class="nav" id="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-brand">
+                <img src="logo.jpeg" alt="Shan Mobile">
+                <span class="nav-brand-name">Shan Mobile</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="products.html" class="nav-link active">iPhones</a>
+                <a href="index.html#why" class="nav-link">Why Us</a>
+                <a href="index.html#guarantee" class="nav-link">Guarantee</a>
+                <a href="index.html#reviews" class="nav-link">Reviews</a>
+            </nav>
+            <a href="https://wa.me/94000000000" target="_blank" rel="noopener" class="nav-cta">Get in Touch</a>
+            <button class="hamburger" id="menu-btn" aria-label="Menu">
+                <svg id="ico-open" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round">
+                    <line x1="3" y1="7" x2="21" y2="7" />
+                    <line x1="3" y1="15" x2="21" y2="15" />
+                </svg>
+                <svg id="ico-close" style="display:none" width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <path d="M5 5l12 12M17 5L5 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="index.html">Home</a>
+        <a href="products.html">iPhones</a>
+        <a href="index.html#why" class="mob-link">Why Us</a>
+        <a href="index.html#guarantee" class="mob-link">Guarantee</a>
+        <a href="index.html#reviews" class="mob-link">Reviews</a>
+        <a href="https://wa.me/94000000000" target="_blank" rel="noopener" class="mob-link"
+            style="color: var(--gold);">Contact Us</a>
+    </div>
+
+    <!-- CATEGORY POPUP -->
+    <div class="popup-overlay" id="popup-overlay">
+        <div class="popup-card">
+            <div class="popup-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <rect x="5" y="2" width="14" height="20" rx="2" />
+                    <line x1="12" y1="18" x2="12.01" y2="18" />
+                </svg>
+            </div>
+            <div class="popup-title">What are you looking for?</div>
+            <div class="popup-sub">Choose the type of iPhone that suits your budget and expectations.</div>
+
+            <div class="popup-options">
+                <button class="popup-opt" onclick="selectCategory('Brand New')">
+                    <div class="popup-opt-icon" style="background: rgba(48,209,88,0.15); color: #30D158;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                        </svg>
+                    </div>
+                    <div class="popup-opt-title">Brand New</div>
+                    <div class="popup-opt-desc">Factory sealed. The highest tier of perfection.</div>
+                    <div class="popup-opt-warranty">
+                        <div style="font-weight: 600; color: #fff;">APPLE WARRANTY</div>
+                        <ul>
+                            <li>1 Year Apple International Warranty</li>
+                            <li>Untouched Accessories</li>
+                            <li>Perfect Condition</li>
+                        </ul>
+                    </div>
+                </button>
+
+                <button class="popup-opt" onclick="selectCategory('P1+ Rated')">
+                    <div class="popup-opt-icon" style="background: rgba(201,169,110,0.15); color: #C9A96E;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                    </div>
+                    <div class="popup-opt-title">P1+ Rated</div>
+                    <div class="popup-opt-desc">Best value for money. Certified pre-owned excellence.</div>
+                    <div class="popup-opt-warranty">
+                        <div style="font-weight: 600; color: #fff;">INCLUDED WARRANTY</div>
+                        <ul>
+                            <li>1 Year Hardware Warranty</li>
+                            <li>6 Months Photo-to-Phone Checking</li>
+                            <li>1 Year Battery Warranty (Replacement)</li>
+                            <li>6 Months Battery Warranty (85%)</li>
+                            <li>Lifetime Software Warranty</li>
+                        </ul>
+                    </div>
+                </button>
+
+                <button class="popup-opt" onclick="selectCategory('Refurbished')">
+                    <div class="popup-opt-icon" style="background: rgba(0,113,227,0.15); color: #0071E3;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+                            <polyline points="21 3 21 8 16 8" />
+                        </svg>
+                    </div>
+                    <div class="popup-opt-title">Refurbished</div>
+                    <div class="popup-opt-desc">Budget-friendly and fully functional devices.</div>
+                    <div class="popup-opt-warranty">
+                        <div style="font-weight: 600; color: #fff;">WARRANTY</div>
+                        <ul>
+                            <li>3 Months Hardware Warranty</li>
+                            <li>2 Weeks Photo-to-Phone Checking</li>
+                            <li>1 Month Battery Warranty</li>
+                            <li>Lifetime Software Warranty</li>
+                        </ul>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1 class="page-title"><span class="gradient-text">Buy iPhone</span> for Best Price in Anuradhapura.
+                </h1>
+                <p class="page-subtitle">Discover the best deals on iPhone at Shan Mobile. Find a wide range of models
+                    and unbeatable prices on your favorite iPhone. Starting from an incredible <strong>Rs.
+                        64,000</strong> LKR, our prices are unmatched in the market.</p>
+                <div class="page-header-stats">
+                    <div class="ph-stat">
+                        <div class="ph-stat-dot"></div>12 models available
+                    </div>
+                    <div class="ph-stat">
+                        <div class="ph-stat-dot"></div>Starting from Rs. 64,000
+                    </div>
+                    <div class="ph-stat">
+                        <div class="ph-stat-dot"></div>Island-wide delivery
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CATEGORY SWITCHER -->
+    <div class="filter-section" id="filter-section">
+        <div class="container">
+            <div class="filter-inner">
+                <div class="cat-switcher" id="cat-switcher">
+                    <div class="cat-slider" id="cat-slider"></div>
+                    <button class="cat-btn active" data-filter="All">All Models</button>
+                    <button class="cat-btn" data-filter="Brand New">Brand New</button>
+                    <button class="cat-btn" data-filter="P1+ Rated">P1+ Rated</button>
+                    <button class="cat-btn" data-filter="Refurbished">Refurbished</button>
+                </div>
+                <div class="filter-right">
+                    <span class="filter-count" id="filter-count">12 models</span>
+                    <select class="sort-select" id="sort-select">
+                        <option value="default">Sort by: Featured</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="newest">Newest First</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRODUCT GRID -->
+    <section class="products-section">
+        <div class="container">
+            <div class="products-grid" id="products-grid"></div>
+        </div>
+    </section>
+
+    <!-- TRUST STRIP -->
+    <div class="trust-strip">
+        <div class="container">
+            <div class="trust-grid">
+                <div class="reveal">
+                    <div class="trust-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                    </div>
+                    <div class="trust-item-title">P1+ Certified</div>
+                    <div class="trust-item-desc">Strictest cosmetic grading for pre-owned iPhones</div>
+                </div>
+                <div class="reveal">
+                    <div class="trust-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="7" width="16" height="10" rx="2" />
+                            <line x1="22" y1="11" x2="22" y2="13" />
+                        </svg>
+                    </div>
+                    <div class="trust-item-title">Real Battery Health</div>
+                    <div class="trust-item-desc">Never boosted. What you see is the real figure.</div>
+                </div>
+                <div class="reveal">
+                    <div class="trust-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                    </div>
+                    <div class="trust-item-title">1-Year Warranty</div>
+                    <div class="trust-item-desc">Full hardware coverage in writing with every purchase</div>
+                </div>
+                <div class="reveal">
+                    <div class="trust-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="5" y="2" width="14" height="20" rx="2" />
+                            <line x1="12" y1="18" x2="12.01" y2="18" />
+                        </svg>
+                    </div>
+                    <div class="trust-item-title">Clean IMEI</div>
+                    <div class="trust-item-desc">Verified, unlocked, no activation lock issues</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA BANNER -->
+    <div class="cta-banner">
+        <div class="container">
+            <h2 class="cta-banner-title">Don't see your model?</h2>
+            <p class="cta-banner-sub">We source specific models on request. Tell us what you need and we'll find you the
+                perfect P1+ certified match.</p>
+            <a href="https://wa.me/94000000000" target="_blank" rel="noopener" class="btn-gold">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                </svg>
+                Message on WhatsApp
+            </a>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-brand">
+                        <img src="logo.jpeg" alt="Shan Mobile">
+                        <span class="footer-brand-name">Shan Mobile</span>
+                    </div>
+                    <p class="footer-desc">Sri Lanka's most trusted certified pre-owned iPhone partner. P1+ rated,
+                        battery-verified, and warranty-backed.</p>
+                </div>
+                <div>
+                    <div class="footer-col-title">Shop</div>
+                    <a href="products.html" class="footer-link">All iPhones</a>
+                    <a href="products.html" class="footer-link">iPhone 15 Series</a>
+                    <a href="products.html" class="footer-link">iPhone 14 Series</a>
+                    <a href="products.html" class="footer-link">iPhone 13 Series</a>
+                </div>
+                <div>
+                    <div class="footer-col-title">Company</div>
+                    <a href="index.html#why" class="footer-link">Why Shan Mobile</a>
+                    <a href="index.html#guarantee" class="footer-link">The Guarantee</a>
+                    <a href="index.html#reviews" class="footer-link">Reviews</a>
+                    <a href="https://wa.me/94000000000" target="_blank" class="footer-link">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-copy">&copy; 2025 Shan Mobile. All rights reserved.</div>
+                <div style="font-size: 12px; color: var(--text-w-dim); display: flex; gap: 16px;">
+                    <span>Privacy Policy</span>
+                    <span>Terms of Use</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WHATSAPP FLOAT -->
+    <a href="https://wa.me/94000000000" target="_blank" rel="noopener" class="wa-float" aria-label="Chat on WhatsApp">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+        </svg>
+    </a>
+
+    <!-- SCROLL TOP -->
+    <button class="scroll-top" id="scroll-top" aria-label="Scroll to top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M18 15l-6-6-6 6" />
+        </svg>
+    </button>
+
+    <script>
+        // ── Product Data ──
+        const iphones = [
+            {
+                model: 'iPhone 15 Pro Max', series: 'iPhone 15', tier: 'Brand New',
+                storage: ['256GB', '512GB', '1TB'], price: 398000,
+                battery: '100%', badge: 'Best Seller', badgeType: 'dark',
+                colors: ['Natural Titanium', 'Blue Titanium', 'Black Titanium', 'White Titanium'],
+                img: 'https://d2bschjhk4kxui.cloudfront.net/assets/images/product/67324df4242341731350004.webp'
+            },
+            {
+                model: 'iPhone 15 Pro', series: 'iPhone 15', tier: 'P1+ Rated',
+                storage: ['128GB', '256GB', '512GB'], price: 172000,
+                battery: '96%', badge: 'Popular', badgeType: 'dark',
+                colors: ['Black Titanium', 'Natural Titanium', 'White Titanium'],
+                img: 'https://d2bschjhk4kxui.cloudfront.net/assets/images/product/650224921b63d1694639250.jpg'
+            },
+            {
+                model: 'iPhone 15 Plus', series: 'iPhone 15', tier: 'P1+ Rated',
+                storage: ['128GB', '256GB'], price: 148000,
+                battery: '98%', badge: '', badgeType: '',
+                colors: ['Blue', 'Pink', 'Yellow', 'Green', 'Black'],
+                img: 'https://d2bschjhk4kxui.cloudfront.net/assets/images/product/650224921b63d1694639250.jpg'
+            },
+            {
+                model: 'iPhone 15', series: 'iPhone 15', tier: 'Brand New',
+                storage: ['128GB', '256GB'], price: 235000,
+                battery: '100%', badge: 'Popular', badgeType: 'gold',
+                colors: ['Pink', 'Blue', 'Green', 'Yellow', 'Black'],
+                img: 'https://d2bschjhk4kxui.cloudfront.net/assets/images/product/650224921b63d1694639250.jpg'
+            },
+            {
+                model: 'iPhone 14 Pro Max', series: 'iPhone 14', tier: 'P1+ Rated',
+                storage: ['256GB', '512GB'], price: 145000,
+                battery: '95%', badge: '', badgeType: '',
+                colors: ['Deep Purple', 'Space Black', 'Silver', 'Gold'],
+                img: 'https://d2bschjhk4kxui.cloudfront.net/assets/images/product/631e428b409291662927499.jpg'
+            },
+            {
+                model: 'iPhone 14 Pro', series: 'iPhone 14', tier: 'Refurbished',
+                storage: ['128GB', '256GB'], price: 110000,
+                battery: '88%', badge: 'Budget Pick', badgeType: 'green',
+                colors: ['Space Black', 'Silver', 'Gold'],
+                img: 'https://d2bschjhk4kxui.cloudfront.net/assets/images/product/631e428b409291662927499.jpg'
+            },
+            {
+                model: 'iPhone 14 Plus', series: 'iPhone 14', tier: 'P1+ Rated',
+                storage: ['128GB', '256GB'], price: 108000,
+                battery: '94%', badge: '', badgeType: '',
+                colors: ['Midnight', 'Starlight', 'Blue', 'Purple', 'Red'],
+                img: 'https://d2bschjhk4kxui.cloudfront.net/assets/images/product/66df613d60cd41725915453.webp'
+            },
+            {
+                model: 'iPhone 14', series: 'iPhone 14', tier: 'Refurbished',
+                storage: ['128GB', '256GB'], price: 85000,
+                battery: '86%', badge: 'Value Pick', badgeType: 'green',
+                colors: ['Blue', 'Midnight', 'Starlight'],
+                img: 'https://d2bschjhk4kxui.cloudfront.net/assets/images/product/66df613d60cd41725915453.webp'
+            },
+            {
+                model: 'iPhone 13 Pro Max', series: 'iPhone 13', tier: 'P1+ Rated',
+                storage: ['256GB', '512GB'], price: 118000,
+                battery: '93%', badge: '', badgeType: '',
+                colors: ['Alpine Green', 'Sierra Blue', 'Silver', 'Gold'],
+                img: 'https://d2bschjhk4kxui.cloudfront.net/assets/images/product/631e428b409291662927499.jpg'
+            },
+            {
+                model: 'iPhone 13 Pro', series: 'iPhone 13', tier: 'Refurbished',
+                storage: ['128GB', '256GB'], price: 92000,
+                battery: '85%', badge: '', badgeType: '',
+                colors: ['Sierra Blue', 'Silver', 'Graphite'],
+                img: 'https://d2bschjhk4kxui.cloudfront.net/assets/images/product/650224921b63d1694639250.jpg'
+            },
+            {
+                model: 'iPhone 13', series: 'iPhone 13', tier: 'P1+ Rated',
+                storage: ['128GB', '256GB'], price: 85000,
+                battery: '93%', badge: 'Budget Pick', badgeType: 'green',
+                colors: ['Pink', 'Blue', 'Midnight', 'Starlight'],
+                img: 'https://d2bschjhk4kxui.cloudfront.net/assets/images/product/650224921b63d1694639250.jpg'
+            },
+            {
+                model: 'iPhone 13 Mini', series: 'iPhone 13', tier: 'Refurbished',
+                storage: ['128GB', '256GB'], price: 64000,
+                battery: '84%', badge: '', badgeType: '',
+                colors: ['Midnight', 'Starlight', 'Pink', 'Blue'],
+                img: 'https://d2bschjhk4kxui.cloudfront.net/assets/images/product/66df613d60cd41725915453.webp'
+            }
+        ];
+
+        const colorMap = {
+            'Natural Titanium': '#8F8D84', 'Blue Titanium': '#4A5568', 'Black Titanium': '#424242', 'White Titanium': '#F4F4F4',
+            'Blue': '#215E7C', 'Pink': '#FBD7D3', 'Yellow': '#FCE883', 'Green': '#364935', 'Black': '#1F2020',
+            'Deep Purple': '#594F63', 'Space Black': '#3D3D3D', 'Silver': '#F2F2F2', 'Gold': '#F4E8CE',
+            'Midnight': '#171E27', 'Starlight': '#F9F6F0', 'Purple': '#E6DDFB', 'Red': '#FC0324',
+            'Alpine Green': '#43503E', 'Sierra Blue': '#9BB5CE', 'Graphite': '#5C5B57'
+        };
+
+        const warrantyInfo = {
+            'Refurbished': `
+                <div style="font-size: 11px; font-weight: 700; color: var(--text-d); margin-bottom: 6px; margin-top: 16px;">WARRANTY</div>
+                <ul style="font-size: 11px; color: var(--text-d-dim); padding-left: 14px; margin-bottom: 16px; line-height: 1.5;">
+                    <li>3 months Hardware Warranty</li>
+                    <li>2 weeks Photo-to-Phone Checking Warranty</li>
+                    <li>1 month Battery Warranty (Original Battery Replacement Unit)</li>
+                    <li>Lifetime Software Warranty</li>
+                </ul>
+            `,
+            'P1+ Rated': `
+                <div style="font-size: 11px; font-weight: 700; color: var(--text-d); margin-bottom: 6px; margin-top: 16px;">INCLUDED WARRANTY</div>
+                <ul style="font-size: 11px; color: var(--text-d-dim); padding-left: 14px; margin-bottom: 16px; line-height: 1.5;">
+                    <li>1 Year Hardware Warranty</li>
+                    <li>6 Months Photo-to-Phone Checking Warranty</li>
+                    <li>1 Year Battery Warranty (Original Battery Replacement Unit)</li>
+                    <li>6 Months Battery Warranty (Original Battery 85%)</li>
+                    <li>Lifetime Software Warranty</li>
+                </ul>
+            `,
+            'Brand New': ''
+        };
+
+        let activeFilter = 'All';
+        let activeSort = 'default';
+        let storageSelections = {};
+        let colorSelections = {};
+        let hasSelectedCategory = false; // To track if user made a choice in popup
+
+        const grid = document.getElementById('products-grid');
+        const countEl = document.getElementById('filter-count');
+        const popupOverlay = document.getElementById('popup-overlay');
+
+        function formatPrice(num) {
+            return 'Rs. ' + num.toLocaleString('en-LK');
+        }
+
+        function getFiltered() {
+            let list = activeFilter === 'All' ? [...iphones] : iphones.filter(p => p.tier === activeFilter || p.series === activeFilter);
+
+            if (activeSort === 'price-low') list.sort((a, b) => a.price - b.price);
+            else if (activeSort === 'price-high') list.sort((a, b) => b.price - a.price);
+            else if (activeSort === 'newest') list.sort((a, b) => {
+                const seriesOrder = { 'iPhone 15': 0, 'iPhone 14': 1, 'iPhone 13': 2 };
+                return (seriesOrder[a.series] || 99) - (seriesOrder[b.series] || 99);
+            });
+
+            return list;
+        }
+
+        function renderProducts() {
+            const filtered = getFiltered();
+            countEl.textContent = filtered.length + ' model' + (filtered.length !== 1 ? 's' : '');
+
+            grid.classList.add('fading');
+
+            setTimeout(() => {
+                if (!filtered.length) {
+                    grid.innerHTML = `
+                        <div class="empty-state" style="grid-column: 1/-1;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                            <p>No models found for this filter.</p>
+                        </div>`;
+                } else {
+                    grid.innerHTML = filtered.map((phone, i) => {
+                        const globalIdx = iphones.indexOf(phone);
+                        const selStorage = storageSelections[globalIdx] || phone.storage[0];
+                        const selColor = colorSelections[globalIdx] || phone.colors[0];
+                        const badgeHTML = phone.badge
+                            ? `<div class="p-card-badge badge-${phone.badgeType}">${phone.badge}</div>`
+                            : '';
+
+                        const warrantyHTML = warrantyInfo[phone.tier] || '';
+
+                        return `
+                        <div class="p-card reveal" style="transition-delay: ${(i % 3) * 0.08}s">
+                            ${badgeHTML}
+                            <div class="p-card-img">
+                                <img src="${phone.img}" alt="${phone.model}" loading="lazy">
+                            </div>
+                            <div class="p-card-body">
+                                <div class="p-card-model">${phone.model}</div>
+                                <div class="p-card-color-label">Color: <span style="color: var(--text-d); font-weight: 500;">${selColor}</span></div>
+                                <div class="p-color-dots">
+                                    ${phone.colors.map(c => {
+                            const hex = colorMap[c] || '#ccc';
+                            return `<button class="p-color-dot ${selColor === c ? 'selected' : ''}" style="background-color: ${hex};" onclick="selectColor(${globalIdx}, '${c}')" title="${c}"></button>`;
+                        }).join('')}
+                                </div>
+                                <div class="p-storage-row">
+                                    ${phone.storage.map(s =>
+                            `<button class="p-storage-btn ${selStorage === s ? 'selected' : ''}" onclick="selectStorage(${globalIdx}, '${s}')">${s}</button>`
+                        ).join('')}
+                                </div>
+                                <div class="p-meta-row" style="margin-bottom: 0;">
+                                    <div class="p-tag p-tag-gold">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                        ${phone.tier}
+                                    </div>
+                                    <div class="p-tag">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="16" height="10" rx="2"/><line x1="22" y1="11" x2="22" y2="13"/></svg>
+                                        ${phone.battery}
+                                    </div>
+                                </div>
+                                
+                                ${warrantyHTML}
+                                
+                                <div class="p-price-row">
+                                    <div>
+                                        <div class="p-from">From</div>
+                                        <div class="p-price">${formatPrice(phone.price)}</div>
+                                    </div>
+                                    <a href="https://wa.me/94000000000?text=${encodeURIComponent('Hi, I\'m interested in the ' + phone.model + ' (' + selStorage + ', ' + selColor + '). Is it available?')}" target="_blank" rel="noopener" class="p-inquire-btn">
+                                        Inquire
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                }
+
+                grid.classList.remove('fading');
+                observeReveals();
+            }, 300);
+        }
+
+        window.selectStorage = function (index, value) {
+            storageSelections[index] = value;
+            renderProducts();
+        };
+
+        window.selectColor = function (index, value) {
+            colorSelections[index] = value;
+            renderProducts();
+        };
+
+        // ── Category Switcher & Popup ──
+        const catBtns = document.querySelectorAll('.cat-btn');
+        const catSlider = document.getElementById('cat-slider');
+
+        function updateSlider(btn) {
+            const rect = btn.getBoundingClientRect();
+            const parentRect = btn.parentElement.getBoundingClientRect();
+            catSlider.style.width = `${rect.width}px`;
+            catSlider.style.transform = `translateX(${rect.left - parentRect.left}px)`;
+        }
+
+        function setCategory(catName) {
+            catBtns.forEach(b => {
+                b.classList.remove('active');
+                if (b.dataset.filter === catName) {
+                    b.classList.add('active');
+                    updateSlider(b);
+                }
+            });
+            activeFilter = catName;
+            renderProducts();
+        }
+
+        catBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setCategory(btn.dataset.filter);
+            });
+        });
+
+        // Initialize slider position
+        window.addEventListener('load', () => {
+            const activeBtn = document.querySelector('.cat-btn.active');
+            if (activeBtn) updateSlider(activeBtn);
+        });
+        window.addEventListener('resize', () => {
+            const activeBtn = document.querySelector('.cat-btn.active');
+            if (activeBtn) updateSlider(activeBtn);
+        });
+
+        window.selectCategory = function(catName) {
+            popupOverlay.style.opacity = '0';
+            popupOverlay.style.pointerEvents = 'none';
+            popupOverlay.classList.add('hiding');
+            setTimeout(() => {
+                popupOverlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 500);
+            hasSelectedCategory = true;
+            setCategory(catName);
+        };
+
+        // Show popup on initial load
+        if (!hasSelectedCategory) {
+            document.body.style.overflow = 'hidden';
+            // Smooth entrance after slight delay
+            setTimeout(() => {
+                popupOverlay.style.opacity = '1';
+            }, 100);
+        }
+
+        // ── Sort ──
+        document.getElementById('sort-select').addEventListener('change', (e) => {
+            activeSort = e.target.value;
+            renderProducts();
+        });
+
+        // ── Navbar scroll ──
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 20);
+        }, { passive: true });
+
+        // ── Mobile menu ──
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const icoOpen = document.getElementById('ico-open');
+        const icoClose = document.getElementById('ico-close');
+        let menuOpen = false;
+        function toggleMenu() {
+            menuOpen = !menuOpen;
+            mobileMenu.classList.toggle('open', menuOpen);
+            icoOpen.style.display = menuOpen ? 'none' : 'block';
+            icoClose.style.display = menuOpen ? 'block' : 'none';
+            document.body.style.overflow = menuOpen ? 'hidden' : '';
+        }
+        menuBtn.addEventListener('click', toggleMenu);
+        mobileMenu.querySelectorAll('.mob-link').forEach(l => l.addEventListener('click', () => { if (menuOpen) toggleMenu(); }));
+
+        // ── Scroll reveal ──
+        function observeReveals() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('visible');
+                        observer.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.05 });
+            document.querySelectorAll('.reveal:not(.visible)').forEach(el => observer.observe(el));
+        }
+        observeReveals();
+
+        // ── Scroll to top button ──
+        const scrollTopBtn = document.getElementById('scroll-top');
+        window.addEventListener('scroll', () => {
+            scrollTopBtn.classList.toggle('visible', window.scrollY > 600);
+        }, { passive: true });
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ── Init ──
+        renderProducts();
+    </script>
+</body>
+
+</html>
