@@ -1251,5 +1251,181 @@
             });
         });
     </script>
+    <!-- ==========================================
+         PROJECT PROTECTION & VIEWER SCRIPTS
+         ========================================== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+      /* Project Viewer Overlays & Elements */
+      #p-pin-overlay, #p-mobile-block, #p-details-overlay {
+        position: fixed; inset: 0; background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+        z-index: 100000; display: none; align-items: center; justify-content: center;
+        padding: 24px; text-align: center; font-family: 'Inter', sans-serif;
+      }
+      .p-modal-content {
+        background: #060606; border: 1px solid rgba(255,255,255,0.1);
+        border-top: 3px solid var(--p-primary, #C9A96E); border-radius: 16px;
+        padding: 40px; width: 100%; max-width: 480px; position: relative;
+      }
+      .p-title { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+      .p-desc { font-size: 14px; color: #A1A1A6; line-height: 1.6; margin-bottom: 24px; }
+      .p-input {
+        width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+        color: #fff; padding: 16px; font-family: monospace; font-size: 18px; letter-spacing: 0.3em;
+        text-align: center; outline: none; border-radius: 8px; margin-bottom: 8px; transition: 0.2s;
+      }
+      .p-input:focus { border-color: var(--p-primary, #C9A96E); }
+      .p-error { color: #FF453A; font-size: 12px; margin-bottom: 16px; display: none; }
+      .p-btn {
+        background: var(--p-primary, #C9A96E); color: #000; font-weight: 600;
+        width: 100%; padding: 16px; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s;
+      }
+      .p-btn:hover { filter: brightness(1.1); }
+      .p-btn-close {
+        position: absolute; top: 16px; right: 16px; background: none; border: none; color: #A1A1A6;
+        font-size: 24px; cursor: pointer;
+      }
+      
+      #p-view-details-btn {
+        position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px 24px;
+        border-radius: 980px; font-size: 14px; font-weight: 600; cursor: pointer;
+        z-index: 99990; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        transition: 0.3s;
+      }
+      #p-view-details-btn:hover {
+        background: var(--p-primary, #C9A96E); color: #000; border-color: var(--p-primary, #C9A96E);
+        transform: translateX(-50%) translateY(-2px);
+      }
+      
+      .p-details-grid { display: grid; gap: 16px; text-align: left; margin-bottom: 24px; }
+      .p-detail-item { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; }
+      .p-detail-label { font-size: 11px; text-transform: uppercase; color: #A1A1A6; letter-spacing: 0.1em; margin-bottom: 4px; }
+      .p-detail-val { font-size: 15px; color: #F5F5F7; line-height: 1.5; }
+      .p-price-val { font-size: 28px; font-weight: 800; color: var(--p-primary, #C9A96E); }
+      
+      #p-qr-container { display: none; margin-top: 24px; text-align: center; }
+      #p-qrcode { display: inline-block; background: #fff; padding: 12px; border-radius: 8px; margin-bottom: 12px; }
+    </style>
+
+    <!-- PIN Overlay -->
+    <div id="p-pin-overlay">
+      <div class="p-modal-content">
+        <h3 class="p-title">Enter PIN</h3>
+        <p class="p-desc">This project is undisclosed. Please enter the PIN to view.</p>
+        <input type="password" id="p-pin-input" class="p-input" placeholder="••••">
+        <div class="p-error" id="p-pin-error">Incorrect PIN</div>
+        <button class="p-btn" onclick="pVerifyPin()">Unlock Project</button>
+      </div>
+    </div>
+
+    <!-- Mobile Block Overlay -->
+    <div id="p-mobile-block">
+      <div class="p-modal-content">
+        <h3 class="p-title">Desktop Required</h3>
+        <p class="p-desc">Please load this website on a desktop screen, click "View Details", and unlock mobile view.</p>
+      </div>
+    </div>
+
+    <!-- Details Overlay -->
+    <div id="p-details-overlay">
+      <div class="p-modal-content">
+        <button class="p-btn-close" onclick="document.getElementById('p-details-overlay').style.display='none'">×</button>
+        <h3 class="p-title">Project Details</h3>
+        <div class="p-details-grid">
+          <div class="p-detail-item">
+            <div class="p-detail-label">Project Investment</div>
+            <div class="p-price-val" id="p-val-price"></div>
+          </div>
+          <div class="p-detail-item">
+            <div class="p-detail-label">Why It Costs This Much</div>
+            <div class="p-detail-val" id="p-val-reason"></div>
+          </div>
+          <div class="p-detail-item">
+            <div class="p-detail-label">Business Outcome</div>
+            <div class="p-detail-val" id="p-val-outcome"></div>
+          </div>
+        </div>
+        <button class="p-btn" id="p-btn-unlock-mobile" onclick="pGenerateQR()">Unlock Mobile Screen</button>
+        <div id="p-qr-container">
+          <div id="p-qrcode"></div>
+          <p class="p-desc" style="font-size: 12px;">Scan with mobile to unlock.</p>
+        </div>
+      </div>
+    </div>
+
+    <button id="p-view-details-btn" onclick="document.getElementById('p-details-overlay').style.display='flex'">View Project Details</button>
+
+    <script>
+      let pData = null;
+      
+      async function pInit() {
+        try {
+          const res = await fetch('project.json');
+          pData = await res.json();
+          
+          if(pData.theme && pData.theme.primary) {
+            document.documentElement.style.setProperty('--p-primary', pData.theme.primary);
+          }
+          
+          const params = new URLSearchParams(window.location.search);
+          const isMobileUnlocked = params.get('mobile_unlocked') === 'true';
+          const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
+          
+          if(pData.status === 'undisclosed' && sessionStorage.getItem('p_unlocked') !== 'true' && !isMobileUnlocked) {
+            document.getElementById('p-pin-overlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            return;
+          }
+          
+          pShowProject(isMobile, isMobileUnlocked);
+        } catch(e) {
+          console.error('No project.json found or error loading.', e);
+        }
+      }
+      
+      function pVerifyPin() {
+        const pin = document.getElementById('p-pin-input').value;
+        if(pin === pData.pin) {
+          sessionStorage.setItem('p_unlocked', 'true');
+          document.getElementById('p-pin-overlay').style.display = 'none';
+          document.body.style.overflow = '';
+          const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
+          pShowProject(isMobile, false);
+        } else {
+          document.getElementById('p-pin-error').style.display = 'block';
+        }
+      }
+      
+      function pShowProject(isMobile, isMobileUnlocked) {
+        if(isMobile && !isMobileUnlocked) {
+          document.getElementById('p-mobile-block').style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+        } else {
+          if(!isMobile) {
+            document.getElementById('p-view-details-btn').style.display = 'block';
+          }
+          document.getElementById('p-val-price').innerText = pData.price || 'N/A';
+          document.getElementById('p-val-reason').innerText = pData.reason || '';
+          document.getElementById('p-val-outcome').innerText = pData.outcome || '';
+        }
+      }
+      
+      function pGenerateQR() {
+        document.getElementById('p-btn-unlock-mobile').style.display = 'none';
+        document.getElementById('p-qr-container').style.display = 'block';
+        
+        let unlockUrl = window.location.href.split('?')[0] + '?mobile_unlocked=true';
+        new QRCode(document.getElementById('p-qrcode'), {
+          text: unlockUrl, width: 140, height: 140,
+          colorDark: "#000", colorLight: "#fff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      }
+      
+      pInit();
+    </script>
 </body>
 </html>

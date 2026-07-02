@@ -1577,34 +1577,8 @@
       z-index: 1;
       filter: blur(40px);
     }
-    /* ── PIN MODAL ── */
-    .pin-modal-overlay {
-      position: fixed; inset: 0; background: rgba(12, 12, 14, 0.85); backdrop-filter: blur(12px); z-index: 10000; display: flex; align-items: center; justify-content: center;
-    }
-    .pin-modal-content {
-      background: var(--bg2); border: 1px solid var(--border); padding: 48px; width: 100%; max-width: 420px; position: relative;
-    }
-    .pin-modal-close {
-      position: absolute; top: 16px; right: 24px; background: none; border: none; color: var(--grey); font-size: 24px; cursor: pointer; transition: color 0.2s;
-    }
-    .pin-modal-close:hover { color: var(--white); }
-    .pin-modal-badge {
-      font-family: var(--font-mono); font-size: 10px; color: var(--cobalt); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 16px;
-    }
-    .pin-modal-title {
-      font-family: var(--font-display); font-size: 24px; font-weight: 700; margin-bottom: 12px;
-    }
-    .pin-modal-desc {
-      font-size: 14px; color: var(--grey-light); margin-bottom: 32px; line-height: 1.6;
-    }
-    .pin-input {
-      width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--white); padding: 16px; font-family: var(--font-mono); font-size: 18px; letter-spacing: 0.5em; text-align: center; outline: none; margin-bottom: 8px; transition: border-color 0.2s;
-    }
-    .pin-input:focus { border-color: var(--cobalt); }
-    .pin-error {
-      color: #FF4040; font-size: 12px; text-align: center; margin-bottom: 8px;
-    }
   </style>
+
 
   <section class="portfolio-hero">
     <div class="glow-orb"></div>
@@ -1615,24 +1589,44 @@
   </section>
 
   <section class="projects-showcase">
-    <div class="project-grid" id="dynamic-project-grid">
-      <!-- Populated by JS -->
+    <div class="project-grid">
+      
+      <!-- Shan Mobile Project -->
+      <a href="/projects/shan-mobile/" class="creative-card">
+        <div class="card-content">
+          <div class="card-top">
+            <span class="project-badge">Mobile Experience</span>
+            <div class="project-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </div>
+          </div>
+          <div class="card-bottom">
+            <h2 class="project-name">Shan Mobile</h2>
+            <p class="project-summary">A completely custom web and mobile experience featuring immersive transitions and dynamic routing.</p>
+          </div>
+        </div>
+      </a>
+
+      <!-- Placeholder for future projects to show the layout -->
+      <div class="creative-card" style="opacity: 0.5; cursor: default;">
+        <div class="card-content">
+          <div class="card-top">
+            <span class="project-badge" style="border-color: rgba(255,255,255,0.1); color: var(--grey); background: transparent;">Coming Soon</span>
+          </div>
+          <div class="card-bottom">
+            <h2 class="project-name">Next Project</h2>
+            <p class="project-summary">Your next big idea will live here. Add folders to the projects directory to expand your portfolio.</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
-  <!-- PIN Modal -->
-  <div class="pin-modal-overlay" id="pin-modal" style="display: none;">
-    <div class="pin-modal-content">
-      <button class="pin-modal-close" onclick="closePinModal()">×</button>
-      <div class="pin-modal-badge">Protected Project</div>
-      <h3 class="pin-modal-title">Enter Access PIN</h3>
-      <p class="pin-modal-desc">This project is undisclosed. Please enter the provided PIN to view the case study.</p>
-      <input type="password" id="project-pin-input" class="pin-input" placeholder="••••">
-      <div class="pin-error" id="pin-error" style="display: none;">Invalid PIN. Please try again.</div>
-      <button class="btn-primary" style="width: 100%; margin-top: 16px;" onclick="verifyPin()">Unlock Project</button>
-    </div>
-  </div>
-<!-- ── FOOTER ── -->
+<!-- -- FOOTER -- -->
   <footer>
     <div class="footer-inner">
       <div class="footer-brand">
@@ -1677,7 +1671,7 @@
     </div>
   </footer>
 
-  <!-- ── RAW HTML DATA FOR EMBEDDED PROJECT APPS ── -->
+  <!-- -- RAW HTML DATA FOR EMBEDDED PROJECT APPS -- -->
 
   <!-- Bank App Data (Enterprise 1) -->
   <textarea id="app-bank" style="display:none;">
@@ -1742,14 +1736,14 @@
     <div class="avatar">JR</div>
   </nav>
   <div class="kpi-row">
-    <div class="kpi-card"><div class="kpi-label">Daily Transactions (Volume)</div><div class="kpi-val">2.847<span class="unit">M</span></div><div class="kpi-meta kpi-up">▲ 4.2% vs yesterday</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:72%"></div></div></div>
-    <div class="kpi-card"><div class="kpi-label">Liquidity Ratio</div><div class="kpi-val">1.34<span class="unit">x</span></div><div class="kpi-meta kpi-warn">▲ 0.03 from prior week</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:54%;background:#F5A623"></div></div></div>
-    <div class="kpi-card"><div class="kpi-label">Real-time Risk Index</div><div class="kpi-val">0.081</div><div class="kpi-meta kpi-danger">▼ ELEVATED · 09:42 UTC</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:28%;background:#FF4040"></div></div></div>
+    <div class="kpi-card"><div class="kpi-label">Daily Transactions (Volume)</div><div class="kpi-val">2.847<span class="unit">M</span></div><div class="kpi-meta kpi-up">? 4.2% vs yesterday</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:72%"></div></div></div>
+    <div class="kpi-card"><div class="kpi-label">Liquidity Ratio</div><div class="kpi-val">1.34<span class="unit">x</span></div><div class="kpi-meta kpi-warn">? 0.03 from prior week</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:54%;background:#F5A623"></div></div></div>
+    <div class="kpi-card"><div class="kpi-label">Real-time Risk Index</div><div class="kpi-val">0.081</div><div class="kpi-meta kpi-danger">? ELEVATED � 09:42 UTC</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:28%;background:#FF4040"></div></div></div>
   </div>
   <div class="viz-container">
     <div class="viz-header">
-      <span class="viz-title">Live Money Flow · Intraday</span>
-      <div class="viz-meta"><span class="viz-badge">LIVE</span><span class="viz-badge" style="border-color:rgba(255,255,255,0.1);background:transparent;color:var(--muted)">1D · 15m</span><span class="viz-time">09:47:32 UTC</span></div>
+      <span class="viz-title">Live Money Flow � Intraday</span>
+      <div class="viz-meta"><span class="viz-badge">LIVE</span><span class="viz-badge" style="border-color:rgba(255,255,255,0.1);background:transparent;color:var(--muted)">1D � 15m</span><span class="viz-time">09:47:32 UTC</span></div>
     </div>
     <div class="viz-body">
       <div class="y-labels"><span class="y-label">850M</span><span class="y-label">640M</span><span class="y-label">430M</span><span class="y-label">210M</span><span class="y-label">0</span></div>
@@ -1767,93 +1761,11 @@
           <line x1="396" y1="0" x2="396" y2="120" stroke="rgba(255,64,64,0.3)" stroke-width="0.8" stroke-dasharray="3 3"/>
           <text x="400" y="10" fill="rgba(255,100,100,0.7)" font-family="DM Mono,monospace" font-size="7">ANOMALY</text>
         </svg>
-
-<script>
-  let activeProjectId = null;
-
-  async function loadProjects() {
-    try {
-      const res = await fetch('/api/projects');
-      const projects = await res.json();
-      const grid = document.getElementById('dynamic-project-grid');
-      
-      let html = '';
-      projects.forEach(p => {
-        const isProtected = p.status === 'undisclosed';
-        const badgeColor = p.theme ? p.theme.primary : 'var(--cobalt)';
-        
-        html += `
-          <a href="#" class="creative-card" onclick="handleProjectClick(event, '${p.id}', ${isProtected})">
-            <div class="card-content">
-              <div class="card-top">
-                <span class="project-badge" style="color: ${badgeColor}; border-color: ${p.theme?.secondary || 'var(--cobalt-dim)'}">${p.badge} ${isProtected ? '🔒' : ''}</span>
-                <div class="project-arrow">
-                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </div>
-              </div>
-              <div class="card-bottom">
-                <h2 class="project-name">${p.name}</h2>
-                <p class="project-summary">${p.summary}</p>
-              </div>
-            </div>
-          </a>
-        `;
-      });
-      grid.innerHTML = html;
-    } catch (err) {
-      console.error('Failed to load projects', err);
-    }
-  }
-
-  function handleProjectClick(e, id, isProtected) {
-    e.preventDefault();
-    if (isProtected) {
-      activeProjectId = id;
-      document.getElementById('pin-modal').style.display = 'flex';
-      document.getElementById('project-pin-input').value = '';
-      document.getElementById('pin-error').style.display = 'none';
-      document.getElementById('project-pin-input').focus();
-    } else {
-      window.location.href = `/project-view.html?id=${id}`;
-    }
-  }
-
-  function closePinModal() {
-    document.getElementById('pin-modal').style.display = 'none';
-    activeProjectId = null;
-  }
-
-  async function verifyPin() {
-    const pin = document.getElementById('project-pin-input').value;
-    const errorEl = document.getElementById('pin-error');
-    if (!pin) return;
-    
-    try {
-      const res = await fetch('/api/projects/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: activeProjectId, pin })
-      });
-      
-      if (res.ok) {
-        const data = await res.json();
-        window.location.href = `/project-view.html?id=${data.id}&token=${data.mobileToken}`;
-      } else {
-        errorEl.style.display = 'block';
-      }
-    } catch (err) {
-      errorEl.style.display = 'block';
-    }
-  }
-
-  document.getElementById('project-pin-input').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') verifyPin();
-  });
-
-  loadProjects();
-</script>
+      </div>
+      <div class="x-labels"><span class="x-label">08:00</span><span class="x-label">08:30</span><span class="x-label">09:00</span><span class="x-label">09:15</span><span class="x-label">09:30</span><span class="x-label">09:45</span><span class="x-label">NOW</span></div>
+    </div>
+  </div>
+</div>
+</textarea>
 </body>
 </html>
