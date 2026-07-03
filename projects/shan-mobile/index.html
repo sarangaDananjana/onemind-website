@@ -168,6 +168,19 @@
             color: var(--text-w); margin-bottom: 24px;
         }
 
+        .hero-side-text-left, .hero-side-text-right {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(32px, 6vw, 88px);
+            font-weight: 700; line-height: 1.05; letter-spacing: -0.04em;
+            z-index: 5;
+            pointer-events: none;
+        }
+        .hero-side-text-left { left: 4%; }
+        .hero-side-text-right { right: 4%; }
+
         .gradient-text-animated {
             background: linear-gradient(90deg, #FFFFFF, #C9A96E, #FDE047, #FFFFFF);
             background-size: 200% auto;
@@ -577,6 +590,14 @@
 
         /* ═══ RESPONSIVE ═══ */
         @media (max-width: 768px) {
+            .hero-content {
+                padding-top: 100px;
+                padding-bottom: 40px;
+            }
+            .hero-side-text-left { top: 18%; left: 5%; font-size: 28px; }
+            .hero-side-text-right { top: 18%; right: 5%; font-size: 28px; }
+            .hero-pin-wrapper { padding-bottom: 0; }
+            
             .nav-links, .nav-cta { display: none; }
             .hamburger { display: flex; }
             .stats { grid-template-columns: repeat(2, 1fr); margin-top: -20px; }
@@ -637,15 +658,15 @@
     <section class="hero-pin-wrapper" id="hero-pin-wrapper">
         <video id="hero-video" class="hero-video" src="shan-mobile.mp4" muted playsinline autoplay preload="auto"></video>
         
+        <div class="hero-side-text-left gradient-text-animated reveal reveal-d1">Certified.</div>
+        <div class="hero-side-text-right gradient-text-animated reveal reveal-d1">Trusted.</div>
+
         <div class="hero-content" id="hero-content">
-                <div class="reveal">
-                    <div class="hero-eyebrow">
-                        Sri Lanka's Premier Apple Partner
-                    </div>
+            <div class="reveal">
+                <div class="hero-eyebrow">
+                    Sri Lanka's Premier Apple Partner
                 </div>
-                <h1 class="hero-h1 gradient-text-animated reveal reveal-d1">
-                    iPhone.<br>Certified. Trusted.
-                </h1>
+            </div>
             <p class="hero-sub reveal reveal-d2">
                 Every device is <strong>P1+ cosmetically graded</strong>, battery-verified without boosting, and backed by a full <strong>1-year hardware warranty</strong>.
             </p>
@@ -965,7 +986,7 @@
         gsap.registerPlugin(ScrollTrigger);
 
         const video = document.getElementById('hero-video');
-        const heroGradientText = document.querySelector('.gradient-text-animated');
+        const heroGradientTexts = document.querySelectorAll('.gradient-text-animated');
         
         // Ensure video is ready before applying animation
         function initVideoScroll() {
@@ -988,11 +1009,13 @@
             }, 0);
 
             // Animate gradient text color
-            if (heroGradientText) {
-                tl.to(heroGradientText, {
-                    backgroundPosition: "200% center",
-                    ease: "none"
-                }, 0);
+            if (heroGradientTexts.length > 0) {
+                heroGradientTexts.forEach(el => {
+                    tl.to(el, {
+                        backgroundPosition: "200% center",
+                        ease: "none"
+                    }, 0);
+                });
             }
         }
         
