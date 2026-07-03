@@ -176,6 +176,14 @@
             color: var(--text-w); margin-bottom: 24px;
         }
 
+        .gradient-text-animated {
+            background: linear-gradient(90deg, #FFFFFF, #C9A96E, #FDE047, #FFFFFF);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
         .hero-sub {
             font-size: 21px; font-weight: 400; color: var(--text-w-mid);
             max-width: 600px; line-height: 1.5; margin: 0 auto 40px;
@@ -644,7 +652,7 @@
                         Sri Lanka's Premier Apple Partner
                     </div>
                 </div>
-                <h1 class="hero-h1 reveal reveal-d1">
+                <h1 class="hero-h1 gradient-text-animated reveal reveal-d1">
                     iPhone.<br>Certified. Trusted.
                 </h1>
             <p class="hero-sub reveal reveal-d2">
@@ -968,6 +976,7 @@
 
         const video = document.getElementById('hero-video');
         const heroContent = document.getElementById('hero-content');
+        const heroGradientText = document.querySelector('.gradient-text-animated');
         
         // Ensure video is ready before applying animation
         video.onloadedmetadata = function() {
@@ -986,12 +995,13 @@
                 ease: "none"
             }, 0);
 
-            // Animate content moving from right to left and fading out
-            tl.to(heroContent, {
-                xPercent: -50,
-                opacity: 0,
-                ease: "power1.inOut"
-            }, 0);
+            // Animate gradient text color
+            if (heroGradientText) {
+                tl.to(heroGradientText, {
+                    backgroundPosition: "200% center",
+                    ease: "none"
+                }, 0);
+            }
         };
         
         // Fallback if metadata is already loaded
