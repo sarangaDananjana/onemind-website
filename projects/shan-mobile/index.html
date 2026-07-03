@@ -131,20 +131,12 @@
             position: relative;
             width: 100%;
             background: var(--dark);
-            height: 300vh; /* creates scrollable space for the animation */
-            overflow: hidden;
-            border-bottom: 1px solid var(--dark-1);
-        }
-
-        .hero-sticky-container {
-            position: sticky;
-            top: 0;
-            width: 100%;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            border-bottom: 1px solid var(--dark-1);
             padding-bottom: 10%; /* user requested padding bottom 10% */
         }
 
@@ -643,10 +635,9 @@
 
     <!-- HERO -->
     <section class="hero-pin-wrapper" id="hero-pin-wrapper">
-        <div class="hero-sticky-container">
-            <video id="hero-video" class="hero-video" src="shan-mobile.mp4" muted playsinline preload="auto"></video>
-            
-            <div class="hero-content" id="hero-content">
+        <video id="hero-video" class="hero-video" src="shan-mobile.mp4" muted playsinline autoplay preload="auto"></video>
+        
+        <div class="hero-content" id="hero-content">
                 <div class="reveal">
                     <div class="hero-eyebrow">
                         Sri Lanka's Premier Apple Partner
@@ -691,7 +682,6 @@
                     <div class="hero-glass-desc">Written hardware warranty with a physical card</div>
                 </div>
             </div>
-        </div>
         </div>
     </section>
 
@@ -975,23 +965,25 @@
         gsap.registerPlugin(ScrollTrigger);
 
         const video = document.getElementById('hero-video');
-        const heroContent = document.getElementById('hero-content');
         const heroGradientText = document.querySelector('.gradient-text-animated');
         
         // Ensure video is ready before applying animation
-        video.onloadedmetadata = function() {
+        function initVideoScroll() {
+            video.pause();
+            
             let tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: "#hero-pin-wrapper",
                     start: "top top",
-                    end: "bottom bottom",
+                    end: "+=300%",
                     scrub: 1, // smooth scrubbing
+                    pin: true
                 }
             });
 
             // Animate video time
             tl.to(video, {
-                currentTime: video.duration,
+                currentTime: video.duration || 5, // fallback duration
                 ease: "none"
             }, 0);
 
@@ -1002,11 +994,12 @@
                     ease: "none"
                 }, 0);
             }
-        };
+        }
         
-        // Fallback if metadata is already loaded
         if (video.readyState >= 1) {
-            video.onloadedmetadata();
+            initVideoScroll();
+        } else {
+            video.addEventListener('loadedmetadata', initVideoScroll);
         }
 
         // ── Data ──
