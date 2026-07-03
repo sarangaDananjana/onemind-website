@@ -8,8 +8,7 @@
     <meta name="theme-color" content="#000000">
     <link rel="icon" href="logo.jpeg" type="image/jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* ═══════════════════════════════════════════════════════════
            SHAN MOBILE — APPLE/FRANCIUM AESTHETIC REDESIGN
@@ -34,6 +33,7 @@
             --blue: #0066CC;
             --blue-hover: #0077ED;
             --green: #30D158;
+            --gold: #A16207;
             
             --border-dark: rgba(255,255,255,0.15);
             --border-light: rgba(0,0,0,0.05);
@@ -44,6 +44,10 @@
             --shadow-sm: 0 2px 10px rgba(0,0,0,0.03);
             --shadow-md: 0 8px 30px rgba(0,0,0,0.08);
             --shadow-lg: 0 16px 50px rgba(0,0,0,0.12);
+        }
+
+        h1, h2, h3, .hero-h1, .section-title {
+            font-family: 'Playfair Display', serif;
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -123,17 +127,41 @@
         .mobile-menu a:hover { color: var(--light-2); }
 
         /* ═══ HERO — FRANCIUM STYLE ═══ */
-        .hero {
-            min-height: 90vh; display: flex; flex-direction: column; align-items: center;
-            justify-content: center; text-align: center;
-            padding: 140px 24px 80px;
+        .hero-pin-wrapper {
+            position: relative;
+            width: 100%;
             background: var(--dark);
-            position: relative; overflow: hidden;
+            height: 300vh; /* creates scrollable space for the animation */
+            overflow: hidden;
             border-bottom: 1px solid var(--dark-1);
         }
 
+        .hero-sticky-container {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding-bottom: 10%; /* user requested padding bottom 10% */
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            opacity: 0.6;
+        }
+
         .hero-content {
-            position: relative; z-index: 10; max-width: 860px;
+            position: relative; z-index: 10; max-width: 860px; text-align: center;
         }
 
         .hero-eyebrow {
@@ -606,16 +634,19 @@
     </div>
 
     <!-- HERO -->
-    <section class="hero">
-        <div class="hero-content">
-            <div class="reveal">
-                <div class="hero-eyebrow">
-                    Sri Lanka's Premier Apple Partner
+    <section class="hero-pin-wrapper" id="hero-pin-wrapper">
+        <div class="hero-sticky-container">
+            <video id="hero-video" class="hero-video" src="shan-mobile.mp4" muted playsinline preload="auto"></video>
+            
+            <div class="hero-content" id="hero-content">
+                <div class="reveal">
+                    <div class="hero-eyebrow">
+                        Sri Lanka's Premier Apple Partner
+                    </div>
                 </div>
-            </div>
-            <h1 class="hero-h1 reveal reveal-d1">
-                iPhone.<br>Certified. Trusted.
-            </h1>
+                <h1 class="hero-h1 reveal reveal-d1">
+                    iPhone.<br>Certified. Trusted.
+                </h1>
             <p class="hero-sub reveal reveal-d2">
                 Every device is <strong>P1+ cosmetically graded</strong>, battery-verified without boosting, and backed by a full <strong>1-year hardware warranty</strong>.
             </p>
@@ -652,6 +683,7 @@
                     <div class="hero-glass-desc">Written hardware warranty with a physical card</div>
                 </div>
             </div>
+        </div>
         </div>
     </section>
 
@@ -928,7 +960,45 @@
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     </a>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script>
+        // ── Video Scroll Sequence Animation ──
+        gsap.registerPlugin(ScrollTrigger);
+
+        const video = document.getElementById('hero-video');
+        const heroContent = document.getElementById('hero-content');
+        
+        // Ensure video is ready before applying animation
+        video.onloadedmetadata = function() {
+            let tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: "#hero-pin-wrapper",
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: 1, // smooth scrubbing
+                }
+            });
+
+            // Animate video time
+            tl.to(video, {
+                currentTime: video.duration,
+                ease: "none"
+            }, 0);
+
+            // Animate content moving from right to left and fading out
+            tl.to(heroContent, {
+                xPercent: -50,
+                opacity: 0,
+                ease: "power1.inOut"
+            }, 0);
+        };
+        
+        // Fallback if metadata is already loaded
+        if (video.readyState >= 1) {
+            video.onloadedmetadata();
+        }
+
         // ── Data ──
         const featured = [
             { model: 'iPhone 15 Pro Max', storage: '256GB', price: 'Rs. 198,000', battery: '97%', badge: 'Best Seller', img: 'https://d2bschjhk4kxui.cloudfront.net/assets/images/product/67324df4242341731350004.webp' },
