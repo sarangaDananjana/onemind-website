@@ -501,11 +501,18 @@
         .cross-icon { color: #FF3B30; margin-right: 8px; stroke-width: 3px; }
 
         /* ═══ TESTIMONIALS ═══ */
-        .test-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 56px; }
+        .test-grid { display: flex; overflow-x: auto; gap: 24px; margin-top: 56px; padding-bottom: 20px; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: var(--border-dark) var(--light-1); }
+        .test-grid::-webkit-scrollbar { height: 8px; }
+        .test-grid::-webkit-scrollbar-track { background: var(--light-1); border-radius: 4px; }
+        .test-grid::-webkit-scrollbar-thumb { background: var(--text-d-dim); border-radius: 4px; }
         .test-card {
             background: var(--light); border: 1px solid rgba(0,0,0,0.03);
             border-radius: var(--radius-card); padding: 40px;
             box-shadow: var(--shadow-sm); transition: all 0.3s;
+            flex: 0 0 350px; scroll-snap-align: start;
+        }
+        .test-card-img {
+            width: 64px; height: 64px; border-radius: 50%; object-fit: cover; margin-bottom: 16px; border: 2px solid var(--light-1);
         }
         .test-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
         .test-stars { display: flex; gap: 4px; margin-bottom: 20px; }
@@ -606,7 +613,6 @@
             .featured-grid { grid-template-columns: 1fr; }
             .why-grid { grid-template-columns: 1fr; }
             .guarantee-grid { grid-template-columns: 1fr; }
-            .test-grid { grid-template-columns: 1fr; }
             .footer-grid { grid-template-columns: 1fr; gap: 40px; }
             .footer-bottom { flex-direction: column; align-items: flex-start; }
             .section { padding: 80px 0; }
@@ -1040,10 +1046,15 @@
         ];
 
         const testimonials = [
-            { name: 'Kavinda R.', loc: 'Colombo', model: 'iPhone 14 Pro', quote: 'The battery health was exactly as advertised — no manipulation, no tricks. Bought with zero hesitation. These are the only people I trust for a second-hand iPhone.' },
-            { name: 'Nimasha S.', loc: 'Kandy', model: 'iPhone 15', quote: 'I was always worried about pre-owned phones until I found Shan Mobile. The 1-year warranty completely changed my perspective. Professional, transparent, and genuinely helpful.' },
-            { name: 'Dilshan P.', loc: 'Gampaha', model: 'iPhone 13 Pro', quote: 'Other shops were cheaper but after learning about battery boosting, I paid the premium at Shan Mobile. Worth every rupee — my phone is still running perfectly 10 months later.' },
-            { name: 'Thilini M.', loc: 'Negombo', model: 'iPhone 14', quote: 'Had a minor hardware issue at month 8. They fixed it immediately, no questions, no fees. The warranty is real — not just printed words on a card.' },
+            { name: 'Nethmi P.', loc: 'Colombo', model: 'iPhone 15 Pro', img: '728243593_1478898537600895_5235690867444164185_n.jpg', quote: 'The battery health was exactly as advertised. The glassmorphism UI of their system made it so easy to check the prices without any hassle!' },
+            { name: 'Kasun L.', loc: 'Kandy', model: 'iPhone 14 Pro Max', img: '728527873_1478898570934225_5063523611070930731_n.jpg', quote: 'I saved so much money not having to deal with chatbot costs. The direct web interface is smooth and professional. Highly recommended.' },
+            { name: 'Sanduni M.', loc: 'Gampaha', model: 'iPhone 13 Pro', img: '728544038_1478897560934326_4758452557181415905_n.jpg', quote: 'Other shops were cheaper but after learning about battery boosting, I paid the premium. Worth every rupee — my phone is still running perfectly.' },
+            { name: 'Lahiru D.', loc: 'Negombo', model: 'iPhone 15', img: '728580757_1478897570934325_334347780389451656_n.jpg', quote: 'Professional, transparent, and genuinely helpful. The new admin dashboard they mentioned keeps everything well stocked and up-to-date!' },
+            { name: 'Tharushi W.', loc: 'Galle', model: 'iPhone 14 Pro', img: '728599457_1478897500934332_2826164570347930041_n.jpg', quote: 'The 3D design of the website is mind-blowing! Plus, the device condition is flawless. Definitely buying my next upgrade from here.' },
+            { name: 'Nuwan S.', loc: 'Matara', model: 'iPhone 14', img: '729747027_1478898534267562_7142661418049907216_n.jpg', quote: 'Had a minor hardware issue at month 8. They fixed it immediately, no questions, no fees. The warranty is real — not just printed words.' },
+            { name: 'Dilini K.', loc: 'Kurunegala', model: 'iPhone 13', img: '729964611_1478898577600891_1686994420632646491_n.jpg', quote: 'I was always worried about pre-owned phones until I found Shan Mobile. Best investment ever, and their website experience is just top-notch.' },
+            { name: 'Chathura T.', loc: 'Jaffna', model: 'iPhone 15 Pro Max', img: '731059079_1478897497600999_1936955498234160812_n.jpg', quote: 'Amazing pricing and unbeatable P1+ cosmetic condition. The website made the purchase experience seamless and transparent.' },
+            { name: 'Kavindi N.', loc: 'Anuradhapura', model: 'iPhone 14', img: '737550731_1487502666740482_3804696987229938286_n.jpg', quote: 'Every component is original Apple as promised. I love how easily I could browse models thanks to the new beautifully designed UI.' }
         ];
 
         const tickerItems = ['P1+ Cosmetic Rating', 'Genuine Battery Health', '1-Year Hardware Warranty', 'Clean IMEI Verified', 'Original Apple Parts', 'Carrier Unlocked', 'No Battery Boosting', 'Post-Sale Support'];
@@ -1139,14 +1150,15 @@
         const starSVG = '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
         document.getElementById('test-grid').innerHTML = testimonials.map(t => `
             <div class="test-card reveal">
-                <div class="test-stars">${starSVG.repeat(5)}</div>
-                <p class="test-quote">"${t.quote}"</p>
+                ${t.img ? \`<img src="customers/\${t.img}" class="test-card-img" alt="\${t.name}">\` : ''}
+                <div class="test-stars">\${starSVG.repeat(5)}</div>
+                <p class="test-quote">"\${t.quote}"</p>
                 <div class="test-footer">
                     <div>
-                        <div class="test-name">${t.name}</div>
-                        <div class="test-loc">${t.loc}</div>
+                        <div class="test-name">\${t.name}</div>
+                        <div class="test-loc">\${t.loc}</div>
                     </div>
-                    <div class="test-model">${t.model}</div>
+                    <div class="test-model">\${t.model}</div>
                 </div>
             </div>
         `).join('');
@@ -1427,7 +1439,7 @@
       </div>
     </div>
 
-    <button id="p-view-details-btn" onclick="document.getElementById('p-details-overlay').style.display='flex'">View Project Details</button>
+    <button id="p-view-details-btn" onclick="document.getElementById('p-details-overlay').style.display='flex'">View Project Price and Details</button>
 
     <script>
       let pData = null;
@@ -1494,9 +1506,9 @@
           if(!isMobile) {
             document.getElementById('p-view-details-btn').style.display = 'flex';
           }
-          document.getElementById('p-val-price').innerText = pData.price || 'N/A';
-          document.getElementById('p-val-reason').innerText = pData.reason || '';
-          document.getElementById('p-val-outcome').innerText = pData.outcome || '';
+          document.getElementById('p-val-price').innerHTML = pData.price || 'N/A';
+          document.getElementById('p-val-reason').innerHTML = pData.reason || '';
+          document.getElementById('p-val-outcome').innerHTML = pData.outcome || '';
         }
       }
       

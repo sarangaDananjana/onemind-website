@@ -1,9 +1,9 @@
 {
   "status": "undisclosed",
   "pin": "1234",
-  "price": "$15,000",
-  "reason": "Complete architectural redesign with highly custom 3D animations, glassmorphism UI, and rigorous performance optimizations.",
-  "outcome": "Increased user engagement by 40% and established a premium brand presence in the local market.",
+  "price": "<del style=\"color: #86868b; font-size: 0.8em; margin-right: 8px;\">Rs 159,999</del>Rs 129,999<div style=\"font-size: 13px; font-weight: normal; color: #171717; margin-top: 6px; padding: 4px 8px; background: #C9A96E33; display: inline-block; border-radius: 6px;\">Special offer valid until July 11, 2026</div>",
+  "reason": "අප මේ ලබාදෙන සේවාවට ඇඩ්මින් ඩෑද්බෝඩ් එකක්(පහසුවෙන්ම අලුත් products අඩ්ඩ් කිරීම වගේම stock management වලට website එකට අනුබද්දිත සම්කිපූරණ system එකක්) සම්පූරණ වෙබ් අඩවිය (pages 6-10කින් සමන්විත) 3D looking glassmorphism look....",
+  "outcome": "whatsapp chatbot එක වෙනුවෙන් ලොකු ගනන් වියදම් කරන්නෙ නැතුව වෙබ්සයිට් එකෙන්ම ලේසියෙන්ම customer ට prices බලාගන්න පුලුවන් වෙනවා. විශාල මුදලක් ඉතුරු වෙනවා වගේම කස්ටමර්ටත් ලේසි.",
   "theme": {
     "primary": "#C9A96E"
   },
