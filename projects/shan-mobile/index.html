@@ -1150,15 +1150,15 @@
         const starSVG = '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
         document.getElementById('test-grid').innerHTML = testimonials.map(t => `
             <div class="test-card reveal">
-                ${t.img ? \`<img src="customers/\${t.img}" class="test-card-img" alt="\${t.name}">\` : ''}
-                <div class="test-stars">\${starSVG.repeat(5)}</div>
-                <p class="test-quote">"\${t.quote}"</p>
+                ${t.img ? `<img src="customers/${t.img}" class="test-card-img" alt="${t.name}">` : ''}
+                <div class="test-stars">${starSVG.repeat(5)}</div>
+                <p class="test-quote">"${t.quote}"</p>
                 <div class="test-footer">
                     <div>
-                        <div class="test-name">\${t.name}</div>
-                        <div class="test-loc">\${t.loc}</div>
+                        <div class="test-name">${t.name}</div>
+                        <div class="test-loc">${t.loc}</div>
                     </div>
-                    <div class="test-model">\${t.model}</div>
+                    <div class="test-model">${t.model}</div>
                 </div>
             </div>
         `).join('');
